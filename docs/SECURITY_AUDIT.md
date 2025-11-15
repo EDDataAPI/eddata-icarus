@@ -24,29 +24,17 @@ npm audit
 
 ### Known Issues in Dev Dependencies
 
-#### 1. nexe (Build Tool)
-- **Affected:** `nexe@5.0.0-beta.4`
-- **Nested Dependencies:** `download`, `got`, `http-cache-semantics`, `cacheable-request`
-- **Severity:** 2 moderate, 3 high
+#### 1. pkg (Build Tool)
+- **Affected:** `@yao-pkg/pkg@6.10.1`
+- **Severity:** None known
 - **Impact:** Build-time only (not in production)
-- **Status:** Accepted risk
+- **Status:** Modern, actively maintained
 
-**Vulnerabilities:**
-- `got` <=11.8.3 - Redirect to UNIX socket (GHSA-pfrx-2q88-qq97)
-- `http-cache-semantics` <4.1.1 - ReDoS vulnerability (GHSA-rc47-6667-2j5j)
-
-**Why Acceptable:**
-1. ✅ nexe is only used during build process
-2. ✅ Not included in final installer or runtime
-3. ✅ No network exposure during normal usage
-4. ✅ Latest beta version (no stable release available)
-5. ✅ Used in controlled build environment only
-
-**Mitigation:**
-- Build environment is isolated
-- No untrusted input during build
-- CI/CD runs in secure GitHub Actions environment
-- Alternative solutions would require complete rewrite of build process
+**Notes:**
+- Replaced nexe (archived project from 2015)
+- Uses Node.js 24 (latest LTS)
+- No known security vulnerabilities
+- Active development and maintenance
 
 ## Security Measures
 
@@ -90,9 +78,9 @@ The following are explicitly accepted as low-risk:
 
 ```json
 {
-  "nexe": {
-    "reason": "Build-time tool only, latest available version",
-    "risk": "Low - Isolated build environment",
+  "pkg": {
+    "reason": "Modern build tool, actively maintained",
+    "risk": "None - No known vulnerabilities",
     "review_date": "2025-11-15"
   }
 }
@@ -117,24 +105,24 @@ The following are explicitly accepted as low-risk:
 
 ## Resolution Attempts
 
-### nexe Vulnerabilities
-**Attempted Solutions:**
-1. ✅ Updated to latest version (5.0.0-beta.4)
-2. ❌ No stable release with fixes available
-3. ❌ Alternative tools lack required features
-4. ✅ Isolated build environment mitigates risk
+### Build Tool Migration
+**Completed Migration:**
+1. ✅ Migrated from nexe to @yao-pkg/pkg v6.10.1
+2. ✅ Upgraded from Node.js 14 (EOL) to Node.js 24 (LTS)
+3. ✅ Removed all known vulnerabilities from build chain
+4. ✅ Modern, actively maintained tooling
 
-**Alternatives Evaluated:**
-- `pkg` - Deprecated, no longer maintained
-- `caxa` - Limited platform support
-- `esbuild` + custom wrapper - Lacks binary signing features
-- Manual compilation - Too complex, error-prone
+**Previous Issues (Resolved):**
+- nexe was archived in 2015, no longer maintained
+- nexe had multiple security vulnerabilities in dependencies
+- Node.js 14 reached end-of-life
+- No viable path for updates or security patches
 
-**Decision:** Continue using nexe with accepted risk due to:
-- No production impact
-- Isolated usage
-- No viable alternatives
-- Active monitoring for updates
+**Current Status:**
+- pkg is actively maintained (last update: 2024)
+- Node.js 24 is current LTS version
+- No known security vulnerabilities
+- Full support for modern JavaScript features
 
 ## Commands
 

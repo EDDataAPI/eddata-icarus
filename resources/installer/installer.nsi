@@ -116,6 +116,11 @@ File "..\..\build\bin\ICARUS Service.exe"
 File "..\..\build\bin\ICARUS Terminal.exe"
 File "..\..\build\bin\WebView2Loader.dll"
 File "..\assets\icon.ico"
+
+; Install service data files
+SetOutPath "$INSTDIR\data"
+File /r "..\..\build\bin\data\*.*"
+
 Call installWebView2
 SectionEnd
 
@@ -182,6 +187,9 @@ Delete "$INSTDIR\uninstall.exe"
 !ifdef WEB_SITE
 Delete "$INSTDIR\${APP_NAME} website.url"
 !endif
+
+; Delete service data directory
+RmDir /r "$INSTDIR\data"
 
 RmDir "$INSTDIR"
 

@@ -27,6 +27,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@yao-pkg/pkg": "^6.10.1",
     "changeexe": "^1.0.2",
     "csvtojson": "^2.0.10",
     "eslint": "^8.57.1",
@@ -38,7 +39,6 @@
     "fs-extra": "^11.2.0",
     "generate-icons": "^0.1.10",
     "makensis": "^1.1.1",
-    "nexe": "^4.0.0-rc.7",
     "next": "^15.0.3",
     "nodemon": "^3.1.7",
     "puppeteer": "^24.15.2",
@@ -76,5 +76,18 @@
       "react/jsx-indent": "off",
       "react/jsx-closing-tag-location": "off"
     }
+  },
+  "pkg": {
+    "assets": [
+      "build/client/**/*",
+      "src/service/data/**/*"
+    ],
+    "scripts": [
+      "node_modules/axios/**/*.js"
+    ],
+    "targets": [
+      "node24-win-x64"
+    ],
+    "outputPath": "build"
   }
 }

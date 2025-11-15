@@ -35,7 +35,7 @@ This project is built on the shoulders of giants. Special thanks to the maintain
 #### Build Tools
 - **NSIS** - Windows installer
 - **Puppeteer** - Browser automation
-- **nexe** - Node.js executable compiler
+- **pkg** - Node.js executable compiler
 - **standard** - JavaScript linting
 
 #### Data & APIs
