@@ -78,7 +78,7 @@ class EliteJson {
         if (callback) callback(await this.json())
       } catch (e) {
         console.error('watcher error', e)
-        if (callback) callback(new Error('elite-json-error'))
+        if (callback) callback(e)
       }
     })
   }
