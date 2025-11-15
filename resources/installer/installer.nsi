@@ -117,6 +117,10 @@ File "..\..\build\bin\ICARUS Terminal.exe"
 File "..\..\build\bin\WebView2Loader.dll"
 File "..\assets\icon.ico"
 
+; Install client files (Next.js build output)
+SetOutPath "$INSTDIR\client"
+File /r "..\..\build\client\*.*"
+
 ; Install service data files
 SetOutPath "$INSTDIR\data"
 File /r "..\..\build\bin\data\*.*"
@@ -187,6 +191,9 @@ Delete "$INSTDIR\uninstall.exe"
 !ifdef WEB_SITE
 Delete "$INSTDIR\${APP_NAME} website.url"
 !endif
+
+; Delete client directory
+RmDir /r "$INSTDIR\client"
 
 ; Delete service data directory
 RmDir /r "$INSTDIR\data"
