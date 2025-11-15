@@ -73,7 +73,7 @@ async function build () {
 function copy () {
   fs.copyFileSync(APP_OPTIMIZED_BUILD, APP_FINAL_BUILD)
   // Resources required by the app
-  fs.copyFileSync(path.join(RESOURCES_DIR, 'dll', 'webview.dll'), path.join(BIN_DIR, 'webview.dll'))
+  // Note: webview.dll no longer needed - using native WebView2 via go-webview2
   fs.copyFileSync(path.join(RESOURCES_DIR, 'dll', 'WebView2Loader.dll'), path.join(BIN_DIR, 'WebView2Loader.dll'))
   // Icon copied to bin dir as used by the terminal at runtime when spawning
   // new windows so must be shipped alongside the binary.

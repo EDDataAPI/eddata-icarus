@@ -4,24 +4,24 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"github.com/nvsoft/win"
-	"github.com/phayes/freeport"
-	"github.com/rodolfoag/gow32"
-	"github.com/sqweek/dialog"
-	"github.com/webview/webview"
-	"golang.org/x/sys/windows"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"syscall"
 	"time"
-	"unsafe"
+
+	"github.com/jchv/go-webview2"
+	"github.com/nvsoft/win"
+	"github.com/phayes/freeport"
+	"github.com/rodolfoag/gow32"
+	"github.com/sqweek/dialog"
+	"golang.org/x/sys/windows"
 )
 
 var dirname = ""
 var defaultPort = 3300 // Set to 0 to be assigned a free high numbered port
 var port int           // Actual port we are running on
-var webViewInstance webview.WebView
+var webViewInstance webview2.WebView
 
 // Track main window size when switching to/from fullscreen
 var windowWidth = defaultWindowWidth
@@ -86,7 +86,7 @@ func main() {
 
 	// Check if we are starting in Terminal mode
 	if *terminalMode {
-		createWindow(TERMINAL_WINDOW_TITLE, url, defaultWindowWidth, defaultWindowHeight, webview.HintNone)
+		createWindow(TERMINAL_WINDOW_TITLE, url, defaultWindowWidth, defaultWindowHeight, webview2.HintNone)
 		return
 	}
 
@@ -163,15 +163,27 @@ func main() {
 }
 
 // createWindow() lets the webview library create a managed window for us
-func createWindow(LAUNCHER_WINDOW_TITLE string, url string, width int32, height int32, hint webview.Hint) {
-	// Passes the pointer to the window as an unsafe reference
-	w := webview.New(DEBUGGER)
+func createWindow(LAUNCHER_WINDOW_TITLE string, url string, width int32, height int32, hint webview2.Hint) {
+	w := webview2.NewWithOptions(webview2.WebViewOptions{
+		Debug:     DEBUGGER,
+		AutoFocus: true,
+		WindowOptions: webview2.WindowOptions{
+			Title:  LAUNCHER_WINDOW_TITLE,
+			Width:  uint(width),
+			Height: uint(height),
+			IconId: 0,
+		},
+	})
+	if w == nil {
+		fmt.Println("Failed to create webview")
+		return
+	}
 	defer w.Destroy()
 
 	hwndPtr := w.Window()
 	hwnd := win.HWND(hwndPtr)
 
-	// Center window and force it to redraw
+	// Center window
 	screenWidth := int32(win.GetSystemMetrics(win.SM_CXSCREEN))
 	screenHeight := int32(win.GetSystemMetrics(win.SM_CYSCREEN))
 	windowX := int32((screenWidth / 2) - (width / 2))
@@ -186,52 +198,19 @@ func createWindow(LAUNCHER_WINDOW_TITLE string, url string, width int32, height 
 
 	bindFunctionsToWebView(w)
 
-	w.SetTitle(LAUNCHER_WINDOW_TITLE)
 	w.SetSize(int(width), int(height), hint)
 	w.Navigate(LoadUrl(url))
 	w.Run()
 }
 
-// createNativeWindow() explicitly creates a native window and passes the handle
-// for it to the webview, this allows for greater customisation
+// createNativeWindow() creates a webview window with custom launcher behavior
+// Note: go-webview2 manages window creation internally, so we use createWindow instead
 func createNativeWindow(LAUNCHER_WINDOW_TITLE string, url string, width int32, height int32) {
-	// Instance of this executable
-	hInstance := win.GetModuleHandle(nil)
-	if hInstance == 0 {
-		fmt.Println("GetModuleHandle failed:", win.GetLastError())
-	}
-
-	// Register window class
-	atom := RegisterClass(hInstance)
-	if atom == 0 {
-		fmt.Println("RegisterClass failed:", win.GetLastError())
-	}
-
-	// Create our own window
-	// We do this manually and pass it to webview so that we can set the window
-	// location (i.e. centered), style, etc before it is displayed.
-	hwndPtr := CreateWin32Window(hInstance, LAUNCHER_WINDOW_TITLE, width, height)
-	if hwndPtr == 0 {
-		fmt.Println("CreateWin32Window failed:", win.GetLastError())
-	}
-
-	// Center window
-	hwnd := win.HWND(hwndPtr)
-	screenWidth := int32(win.GetSystemMetrics(win.SM_CXSCREEN))
-	screenHeight := int32(win.GetSystemMetrics(win.SM_CYSCREEN))
-	windowX := int32((screenWidth / 2) - (width / 2))
-	windowY := int32((screenHeight / 2) - (height / 2))
-	win.MoveWindow(hwnd, windowX, windowY, width, height, false)
-
-	// Pass the pointer to the window as an unsafe reference
-	webViewInstance = webview.NewWindow(DEBUGGER, unsafe.Pointer(&hwndPtr))
-	defer webViewInstance.Destroy()
-	bindFunctionsToWebView(webViewInstance)
-	webViewInstance.Navigate(LoadUrl(url))
-	webViewInstance.Run()
+	// Use the standard createWindow with no size hints for launcher mode
+	createWindow(LAUNCHER_WINDOW_TITLE, url, width, height, webview2.HintNone)
 }
 
-func bindFunctionsToWebView(w webview.WebView) {
+func bindFunctionsToWebView(w webview2.WebView) {
 	hwndPtr := w.Window()
 	hwnd := win.HWND(hwndPtr)
 

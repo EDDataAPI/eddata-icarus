@@ -114,7 +114,6 @@ SetOverwrite ifnewer
 SetOutPath "$INSTDIR"
 File "..\..\build\bin\ICARUS Service.exe"
 File "..\..\build\bin\ICARUS Terminal.exe"
-File "..\..\build\bin\webview.dll"
 File "..\..\build\bin\WebView2Loader.dll"
 File "..\assets\icon.ico"
 Call installWebView2
@@ -177,7 +176,6 @@ Sleep 1000
 # Delete files
 Delete "$INSTDIR\ICARUS Service.exe"
 Delete "$INSTDIR\ICARUS Terminal.exe"
-Delete "$INSTDIR\webview.dll"
 Delete "$INSTDIR\WebView2Loader.dll"
 Delete "$INSTDIR\icon.ico"
 Delete "$INSTDIR\uninstall.exe"
