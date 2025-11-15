@@ -99,7 +99,7 @@ export default function NavigationInspectorPanel ({ systemObject, setSystemObjec
               {systemObject.mapped === true
                 ? <p className='text-info text-muted'><i className='icarus-terminal-scan' style={{ position: 'relative', top: '.3rem', fontSize: '1.5rem' }} /> Surface scanned</p>
                 : <p className='text-info'><i className='icarus-terminal-scan' style={{ position: 'relative', top: '.3rem', fontSize: '1.5rem' }} /> Surface scan required</p>}
-                                                                             </>}
+            </>}
             {isLandable ? <p className='text-info'><i className='icarus-terminal-planet-lander' style={{ position: 'relative', top: '.3rem', fontSize: '1.5rem' }} /> Landable surface</p> : null}
 
             {systemObject.terraformingState && systemObject.terraformingState !== 'Not terraformable' && systemObject.terraformingState !== 'Terraformed' &&
@@ -112,13 +112,13 @@ export default function NavigationInspectorPanel ({ systemObject, setSystemObjec
                 <p className='text-info'><i className='icarus-terminal-plant' style={{ position: 'relative', top: '.2rem', fontSize: '1.5rem' }} /> {systemObject?.signals?.biological} Biological Signal</p>}
               {systemObject?.signals?.biological > 1 &&
                 <p className='text-info'><i className='icarus-terminal-plant' style={{ position: 'relative', top: '.2rem', fontSize: '1.5rem' }} /> {systemObject?.signals?.biological} Biological Signals</p>}
-                                                                                          </>}
+            </>}
 
             {systemObject.biologicalGenuses && <>
               {systemObject.biologicalGenuses.map(genus =>
                 <p key={`navigation-inspector_${systemObject.id}_bio-signal_${genus}`} className='text-info'><i className='icarus-terminal-plant' style={{ position: 'relative', top: '.2rem', fontSize: '1.5rem' }} /> {genus}</p>
               )}
-                                               </>}
+            </>}
 
             {/* {systemObject?.discovery?.commander && <p className='text-info'><span className='text-primary'>EDSM Credit</span><br/>Cmdr {systemObject.discovery.commander}</p>} */}
           </div>}
@@ -142,7 +142,7 @@ export default function NavigationInspectorPanel ({ systemObject, setSystemObjec
                 ? <p className='text-info'>Gravity {Math.max(0.01, Number(systemObject.gravity.toFixed(2)))}g
                   {systemObject.gravity < 0.5 && ' (Low)'}
                   {systemObject.gravity > 1.5 && ' (High)'}
-                </p>
+                  </p>
                 : null}
               {systemObject.radius && <p className='text-info'>Radius {systemObject.radius.toLocaleString(undefined, { maximumFractionDigits: 0 })} Km</p>}
               {systemObject.surfaceTemperature &&
@@ -273,11 +273,12 @@ export default function NavigationInspectorPanel ({ systemObject, setSystemObjec
         {Object.prototype.hasOwnProperty.call(systemObject, 'rotationalPeriod') &&
           <div className='navigation-panel__inspector-section'>
             <h4 className='text-primary'>Orbital properties</h4>
-            {systemObject?.rotationalPeriod !== null && <p className='text-info'>
-              <span className='text-primary'>Rotational Period</span>
-              <br />{systemObject.rotationalPeriod}
-              {systemObject?.rotationalPeriodTidallyLocked && <><br />Tidally Locked</>}
-            </p>}
+            {systemObject?.rotationalPeriod !== null &&
+              <p className='text-info'>
+                <span className='text-primary'>Rotational Period</span>
+                <br />{systemObject.rotationalPeriod}
+                {systemObject?.rotationalPeriodTidallyLocked && <><br />Tidally Locked</>}
+              </p>}
             {systemObject?.orbitalEccentricity !== null && <p className='text-info'><span className='text-primary'>Orbital Eccentricity</span><br />{systemObject.orbitalEccentricity}</p>}
             {systemObject?.orbitalInclination !== null && <p className='text-info'><span className='text-primary'>Orbital Inclination</span><br />{systemObject.orbitalInclination}</p>}
             {systemObject?.orbitalPeriod !== null && <p className='text-info'><span className='text-primary'>Orbital Period</span><br />{systemObject.orbitalPeriod}</p>}

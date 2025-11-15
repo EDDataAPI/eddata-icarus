@@ -137,11 +137,11 @@ export default function NavListPage () {
                               {route.numberOfPlanets > 0 && <>
                                 <i className='icon icarus-terminal-planet' style={{ position: 'relative', top: '.35rem', fontSize: '1.5rem' }} /> {route.numberOfPlanets}
                                 <span className='hidden-small'> {route.numberOfPlanets === 1 ? 'Planet' : 'Planets'}</span>
-                                                            </>}
+                              </>}
                             </span>}
                             {route.numberOfStars < 1 && <>
                               <span className='text-muted'>Unknown System</span>
-                                                        </>}
+                            </>}
                           </div>
                         </td>
                         <td className='text-no-wrap hidden-small hidden-medium'>

@@ -20,7 +20,7 @@
     "dev": "node src/service/main.js --dev",
     "lint": "npm run lint:go && npm run lint:javascript",
     "lint:go": "go fmt src/app/main.go",
-    "lint:javascript": "npx standard --fix",
+    "lint:javascript": "npx eslint --fix src/client/**/*.js src/service/**/*.js",
     "compress-images": "npx imagemin src/client/public/images/** --out-dir src/client/public/images/"
   },
   "keywords": [],
@@ -64,5 +64,11 @@
   "engines": {
     "npm": ">=10.9.0",
     "node": ">=24.0.0"
+  },
+  "standard": {
+    "rules": {
+      "react/jsx-indent": "off",
+      "react/jsx-closing-tag-location": "off"
+    }
   }
 }

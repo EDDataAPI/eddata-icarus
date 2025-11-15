@@ -139,12 +139,12 @@ export default function NavigationSystemMapPanel ({ system, systemObject, setSys
                   <i className='icon icarus-terminal-warning' style={{ fontSize: '1rem', position: 'relative', top: '0.05rem', marginRight: '.15rem' }} />
                   {factionStateDescription}
                 </h3>}
-            </div>
+              </div>
             : <span style={{ display: 'block', minHeight: '2.9rem' }}>
               {/* {system.detail && system.detail.bodies && system.detail.bodies.length > 0 && */}
               <i className='icon icarus-terminal-info' style={{ fontSize: '2rem', position: 'relative', top: '.4rem', textShadow: 'none' }} />
               <i className='icarus-terminal-chevron-up' style={{ position: 'relative', top: '.5rem', left: '-.25rem' }} />
-            </span>}
+              </span>}
         </div>
 
         <div className='fx-fade-in'>

@@ -5,6 +5,7 @@
 !define DESCRIPTION "Application"
 !define INSTALLER_NAME "../../dist/ICARUS Setup.exe"
 !define MAIN_APP_EXE "ICARUS Terminal.exe"
+!define SERVICE_EXE "ICARUS Service.exe"
 !define INSTALL_TYPE "SetShellVarContext current"
 !define REG_ROOT "HKCU"
 !define REG_APP_PATH "Software\Microsoft\Windows\CurrentVersion\App Paths\${MAIN_APP_EXE}"
@@ -41,9 +42,9 @@ InstallDir "$PROGRAMFILES\ICARUS Terminal"
 !define MUI_UNABORTWARNING
 
 !define MUI_WELCOMEFINISHPAGE_BITMAP "panel.bmp"  # 164x314px
-!define MUI_HEADERIMAGE 
+!define MUI_HEADERIMAGE
 !define MUI_HEADERIMAGE_RIGHT
-!define MUI_HEADERIMAGE_BITMAP "header.bmp" # 150x57px 
+!define MUI_HEADERIMAGE_BITMAP "header.bmp" # 150x57px
 
 !insertmacro MUI_PAGE_WELCOME
 
@@ -76,6 +77,34 @@ InstallDir "$PROGRAMFILES\ICARUS Terminal"
 !insertmacro MUI_UNPAGE_FINISH
 
 !insertmacro MUI_LANGUAGE "English"
+
+######################################################################
+
+# Check if application is running before install
+Function .onInit
+	# Check if ICARUS Terminal is running
+	FindWindow $0 "" "${APP_NAME}"
+	StrCmp $0 0 checkService
+		MessageBox MB_OKCANCEL|MB_ICONEXCLAMATION \
+			"${APP_NAME} is currently running. Please close it before continuing." \
+			/SD IDCANCEL IDOK checkService
+		Abort
+
+	checkService:
+	# Check if ICARUS Service is running
+	nsExec::ExecToStack 'tasklist /FI "IMAGENAME eq ${SERVICE_EXE}" /NH'
+	Pop $0
+	Pop $1
+	StrCmp $0 0 0 done
+	# Check if service name is in output (if not found, tasklist returns "INFO: No tasks...")
+	StrCmp $1 "INFO: No tasks are running which match the specified criteria." done
+		MessageBox MB_OKCANCEL|MB_ICONEXCLAMATION \
+			"${SERVICE_EXE} is currently running. Please close ${APP_NAME} before continuing." \
+			/SD IDCANCEL IDOK done
+		Abort
+
+	done:
+FunctionEnd
 
 ######################################################################
 
@@ -125,6 +154,9 @@ WriteRegStr ${REG_ROOT} "${UNINSTALL_PATH}"  "UninstallString" "$INSTDIR\uninsta
 WriteRegStr ${REG_ROOT} "${UNINSTALL_PATH}"  "DisplayIcon" "$INSTDIR\${MAIN_APP_EXE}"
 WriteRegStr ${REG_ROOT} "${UNINSTALL_PATH}"  "DisplayVersion" "${VERSION}"
 WriteRegStr ${REG_ROOT} "${UNINSTALL_PATH}"  "Publisher" "${COMP_NAME}"
+WriteRegStr ${REG_ROOT} "${UNINSTALL_PATH}"  "InstallLocation" "$INSTDIR"
+WriteRegDWORD ${REG_ROOT} "${UNINSTALL_PATH}" "NoModify" 1
+WriteRegDWORD ${REG_ROOT} "${UNINSTALL_PATH}" "NoRepair" 1
 
 !ifdef WEB_SITE
 WriteRegStr ${REG_ROOT} "${UNINSTALL_PATH}"  "URLInfoAbout" "${WEB_SITE}"
@@ -135,6 +167,14 @@ SectionEnd
 
 Section Uninstall
 ${INSTALL_TYPE}
+
+# Terminate running processes
+DetailPrint "Checking for running processes..."
+nsExec::ExecToLog 'taskkill /F /IM "${MAIN_APP_EXE}" /T'
+nsExec::ExecToLog 'taskkill /F /IM "${SERVICE_EXE}" /T'
+Sleep 1000
+
+# Delete files
 Delete "$INSTDIR\ICARUS Service.exe"
 Delete "$INSTDIR\ICARUS Terminal.exe"
 Delete "$INSTDIR\webview.dll"
