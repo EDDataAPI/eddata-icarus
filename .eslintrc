@@ -1,5 +1,5 @@
 {
-  "extends": "standard",
+  "extends": ["standard", "next/core-web-vitals"],
   "rules": {
     "react/jsx-indent": "off",
     "react/jsx-closing-tag-location": "off",

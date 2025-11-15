@@ -1,6 +1,6 @@
 const fs = require('fs')
 const crypto = require('crypto')
-const glob = require('glob')
+const { glob } = require('glob')
 const retry = require('async-retry')
 const Datastore = require('nedb-promises')
 const db = new Datastore()
@@ -337,11 +337,11 @@ class EliteLog {
 
   // Get path to all log files in dir
   #getFiles () {
-    return new Promise(resolve => {
+    return new Promise(async resolve => {
       // Note: Journal.*.log excludes files like JournalAlpha.*.log so that
       // alpha / beta test data doesn't get included by mistake.
-      glob(`${this.dir}/Journal.*.log`, {}, async (error, globFiles) => {
-        if (error) return console.error(error)
+      try {
+        const globFiles = await glob(`${this.dir}/Journal.*.log`)
 
         const files = globFiles.map(name => {
           const { size, mtime: lastModified } = fs.statSync(name)
@@ -356,7 +356,10 @@ class EliteLog {
         }
 
         resolve(files)
-      })
+      } catch (error) {
+        console.error(error)
+        resolve([])
+      }
     })
   }
 
