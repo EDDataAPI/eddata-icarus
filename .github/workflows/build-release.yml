@@ -74,7 +74,7 @@ jobs:
         run: |
           $INSTALLER = Get-ChildItem -Path "dist" -Filter "*.exe" | Select-Object -First 1
           if ($INSTALLER) {
-            echo "INSTALLER_PATH=$($INSTALLER.FullName)" >> $env:GITHUB_OUTPUT
+            echo "INSTALLER_PATH=dist/$($INSTALLER.Name)" >> $env:GITHUB_OUTPUT
             echo "INSTALLER_NAME=$($INSTALLER.Name)" >> $env:GITHUB_OUTPUT
             echo "Found installer: $($INSTALLER.Name)"
           } else {
