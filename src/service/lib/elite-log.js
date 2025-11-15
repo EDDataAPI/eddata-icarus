@@ -336,31 +336,29 @@ class EliteLog {
   }
 
   // Get path to all log files in dir
-  #getFiles () {
-    return new Promise(async resolve => {
-      // Note: Journal.*.log excludes files like JournalAlpha.*.log so that
-      // alpha / beta test data doesn't get included by mistake.
-      try {
-        const globFiles = await glob(`${this.dir}/Journal.*.log`)
+  async #getFiles () {
+    // Note: Journal.*.log excludes files like JournalAlpha.*.log so that
+    // alpha / beta test data doesn't get included by mistake.
+    try {
+      const globFiles = await glob(`${this.dir}/Journal.*.log`)
 
-        const files = globFiles.map(name => {
-          const { size, mtime: lastModified } = fs.statSync(name)
-          const lineCount = fs.readFileSync(name).toString().split('\n').length
-          return new File({ name, lastModified, size, lineCount })
-        })
+      const files = globFiles.map(name => {
+        const { size, mtime: lastModified } = fs.statSync(name)
+        const lineCount = fs.readFileSync(name).toString().split('\n').length
+        return new File({ name, lastModified, size, lineCount })
+      })
 
-        // Track most (mostly recently modified) log file
-        if (files.length > 0) {
-          const activeLogFile = files.sort((a, b) => b.lastModified - a.lastModified)[0]
-          this.lastActiveLogFileName = activeLogFile.name
-        }
-
-        resolve(files)
-      } catch (error) {
-        console.error(error)
-        resolve([])
+      // Track most (mostly recently modified) log file
+      if (files.length > 0) {
+        const activeLogFile = files.sort((a, b) => b.lastModified - a.lastModified)[0]
+        this.lastActiveLogFileName = activeLogFile.name
       }
-    })
+
+      return files
+    } catch (error) {
+      console.error(error)
+      return []
+    }
   }
 
   // Load log file and parse into an array of objects

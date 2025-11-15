@@ -84,26 +84,20 @@ class EliteJson {
     })
   }
 
-  #getFiles () {
-    return new Promise(async (resolve, reject) => {
-      try {
-        const files = await glob(`${this.dir}/*.json`)
+  async #getFiles () {
+    const files = await glob(`${this.dir}/*.json`)
 
-        const response = files.map(name => {
-          const { size, mtime: lastModified } = fs.statSync(name)
-          return new File({
-            name,
-            lastModified,
-            size,
-            label: path.basename(name).replace(/\.json$/, '')
-          })
-        })
-
-        resolve(response)
-      } catch (error) {
-        reject(error)
-      }
+    const response = files.map(name => {
+      const { size, mtime: lastModified } = fs.statSync(name)
+      return new File({
+        name,
+        lastModified,
+        size,
+        label: path.basename(name).replace(/\.json$/, '')
+      })
     })
+
+    return response
   }
 }
 
