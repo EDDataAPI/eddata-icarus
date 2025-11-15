@@ -1,6 +1,6 @@
 module icarus-terminal
 
-go 1.24.0
+go 1.25
 
 require (
 	github.com/gonutz/w32/v2 v2.12.1
