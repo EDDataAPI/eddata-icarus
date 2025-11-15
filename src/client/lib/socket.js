@@ -22,6 +22,9 @@ function socketDebugMessage () { /* console.log(...arguments) */ }
 function connect (socketState, setSocketState) {
   if (socket !== null) return
 
+  // Skip connection during server-side rendering
+  if (typeof window === 'undefined') return
+
   // Reset on reconnect
   callbackHandlers = {}
   deferredEventQueue = []
