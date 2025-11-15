@@ -97,6 +97,7 @@ class TextToSpeech {
   getVoices () {
     return new Promise(resolve =>
       say.getInstalledVoices((err, voices) => {
+        if (err) return resolve([])
         resolve(voices)
       })
     )

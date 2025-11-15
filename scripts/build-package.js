@@ -51,5 +51,5 @@ async function build () {
   }
 
   // Open directory with installer
-  //execSync('explorer.exe dist')
+  // execSync('explorer.exe dist')
 }

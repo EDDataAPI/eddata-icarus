@@ -58,7 +58,6 @@ const handleKeyPress = (event) => {
         const currentIndex = parseInt(activeButton.dataset.primaryNavigation)
         const newIndex = key === 'ArrowLeft' ? currentIndex - 1 : currentIndex + 1
         handleNavigationClick('primary', newIndex)
-        return
       }
     }
   } catch (e) {

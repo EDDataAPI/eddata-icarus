@@ -35,7 +35,13 @@ jobs:
       - name: Update npm dependencies
         run: |
           npm update
-          npm audit fix
+          npm audit fix --omit=dev
+        continue-on-error: true
+
+      - name: Check security (Production only)
+        run: |
+          echo "Checking production dependencies for vulnerabilities..."
+          npm audit --omit=dev --audit-level=high
         continue-on-error: true
 
       - name: Update Go dependencies

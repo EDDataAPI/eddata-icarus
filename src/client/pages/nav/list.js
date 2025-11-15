@@ -16,7 +16,7 @@ export default function NavListPage () {
   const [system, setSystem] = useState()
   const [systemObject, setSystemObject] = useState()
   const [helpVisible, setHelpVisible] = useState(false)
-  
+
   useEffect(animateTableEffect)
 
   const getSystem = async (systemName, useCache = true) => {
