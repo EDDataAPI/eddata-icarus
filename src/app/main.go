@@ -110,6 +110,10 @@ func main() {
 
 	// Use Windows API to get Save Game dir
 	saveGameDirPath, err := windows.KnownFolderPath(windows.FOLDERID_SavedGames, 0)
+	if err != nil {
+		dialog.Message("Failed to determine save game directory: %s", err.Error()).Title("Error").Error()
+		exitApplication(1)
+	}
 
 	// Run service
 	cmdArg0 := fmt.Sprintf("%s%d", "--port=", *portPtr)
@@ -191,10 +195,12 @@ func createWindow(LAUNCHER_WINDOW_TITLE string, url string, width int32, height 
 	win.MoveWindow(hwnd, windowX, windowY, width, height, false)
 
 	// Set window icon
-	hIconSm := win.HICON(win.LoadImage(0, syscall.StringToUTF16Ptr(ICON), win.IMAGE_ICON, 32, 32, win.LR_LOADFROMFILE|win.LR_SHARED|win.LR_LOADTRANSPARENT))
-	hIcon := win.HICON(win.LoadImage(0, syscall.StringToUTF16Ptr(ICON), win.IMAGE_ICON, 64, 64, win.LR_LOADFROMFILE|win.LR_SHARED|win.LR_LOADTRANSPARENT))
-	win.SendMessage(hwnd, win.WM_SETICON, 0, uintptr(hIconSm))
-	win.SendMessage(hwnd, win.WM_SETICON, 1, uintptr(hIcon))
+	if iconPath, err := windows.UTF16PtrFromString(ICON); err == nil {
+		hIconSm := win.HICON(win.LoadImage(0, iconPath, win.IMAGE_ICON, 32, 32, win.LR_LOADFROMFILE|win.LR_SHARED|win.LR_LOADTRANSPARENT))
+		hIcon := win.HICON(win.LoadImage(0, iconPath, win.IMAGE_ICON, 64, 64, win.LR_LOADFROMFILE|win.LR_SHARED|win.LR_LOADTRANSPARENT))
+		win.SendMessage(hwnd, win.WM_SETICON, 0, uintptr(hIconSm))
+		win.SendMessage(hwnd, win.WM_SETICON, 1, uintptr(hIcon))
+	}
 
 	bindFunctionsToWebView(w)
 
@@ -372,9 +378,5 @@ func exitApplication(exitCode int) {
 
 func checkProcessAlreadyExists(windowTitle string) bool {
 	_, err := gow32.CreateMutex(windowTitle)
-	if err != nil {
-		return true
-	}
-
-	return false
+	return err != nil
 }

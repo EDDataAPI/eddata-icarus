@@ -3,16 +3,16 @@ package main
 import (
 	"encoding/json"
 	"errors"
-	"github.com/gonutz/w32/v2"
-	"github.com/jmoiron/jsonq"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"os"
 	"path/filepath"
 	"regexp"
 	"strings"
 	"time"
+
+	"github.com/gonutz/w32/v2"
+	"github.com/jmoiron/jsonq"
 )
 
 const LATEST_RELEASE_URL = "https://api.github.com/repos/iaincollins/icarus/releases/latest"
@@ -115,7 +115,7 @@ func GetLatestRelease() (Release, error) {
 		defer res.Body.Close()
 	}
 
-	body, readErr := ioutil.ReadAll(res.Body)
+	body, readErr := io.ReadAll(res.Body)
 	if readErr != nil {
 		return release, readErr
 	}
@@ -135,7 +135,7 @@ func GetLatestRelease() (Release, error) {
 	releaseNotes, _ := jq.String("body")
 
 	if downloadUrl == "" {
-		return release, errors.New("Could not get download URL")
+		return release, errors.New("could not get download URL")
 	}
 
 	installedVersion := GetCurrentAppVersion()
@@ -150,7 +150,10 @@ func GetLatestRelease() (Release, error) {
 }
 
 func DownloadUpdate(downloadUrl string) (string, error) {
-	tmpDir, _ := ioutil.TempDir("", "*")
+	tmpDir, err := os.MkdirTemp("", "*")
+	if err != nil {
+		return "", err
+	}
 	tmpfile := filepath.Join(tmpDir, "ICARUS Update.exe")
 
 	// Get file to download
@@ -168,7 +171,9 @@ func DownloadUpdate(downloadUrl string) (string, error) {
 	defer out.Close()
 
 	// Write to file
-	_, err = io.Copy(out, resp.Body)
+	if _, err = io.Copy(out, resp.Body); err != nil {
+		return "", err
+	}
 
 	return tmpfile, nil
 }
