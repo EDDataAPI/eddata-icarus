@@ -75,10 +75,11 @@ class EliteJson {
         debounce = setTimeout(() => { debounce = false }, 100)
         this.files[file.name] = await this.load({ file })
         // Send data for all files in the callback
-        if (callback) callback(await this.json())
+        const jsonData = await this.json()
+        if (callback) callback(null, jsonData)
       } catch (e) {
         console.error('watcher error', e)
-        if (callback) callback(e)
+        if (callback) callback(e, null)
       }
     })
   }
