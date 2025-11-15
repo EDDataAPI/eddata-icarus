@@ -156,10 +156,8 @@ func main() {
 		exitApplication(1)
 	}()
 
-	// TODO Only open a window once service is ready
-	time.Sleep(0 * time.Second)
-
 	// Open main window (block rest of main until closed)
+	// Navigate directly to launcher (skip loader)
 	createNativeWindow(LAUNCHER_WINDOW_TITLE, launcherUrl, defaultLauncherWindowWidth, defaultLauncherWindowHeight)
 
 	// Ensure we terminate all processes cleanly when window closes
@@ -205,7 +203,8 @@ func createWindow(LAUNCHER_WINDOW_TITLE string, url string, width int32, height 
 	bindFunctionsToWebView(w)
 
 	w.SetSize(int(width), int(height), hint)
-	w.Navigate(LoadUrl(url))
+	// Navigate directly without loader
+	w.Navigate(url)
 	w.Run()
 }
 

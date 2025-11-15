@@ -1,5 +1,5 @@
 // Convert files from raw data to useable / enriched JSON
-const glob = require('glob')
+const { glob } = require('glob')
 const csv = require('csvtojson')
 const fs = require('fs')
 const path = require('path')

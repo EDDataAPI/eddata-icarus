@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import dynamic from 'next/dynamic'
 import { formatBytes, eliteDateTime } from 'lib/format'
 import { newWindow, checkForUpdate, installUpdate, openReleaseNotes, openTerminalInBrowser } from 'lib/window'
 import { useSocket, eventListener, sendEvent } from 'lib/socket'
@@ -15,7 +16,7 @@ const defaultloadingStats = {
   loadingTime: 0
 }
 
-export default function IndexPage () {
+function LauncherContent () {
   const { connected } = useSocket()
   const [hostInfo, setHostInfo] = useState()
   const [update, setUpdate] = useState()
@@ -23,27 +24,31 @@ export default function IndexPage () {
   const [loadingProgress, setLoadingProgress] = useState(defaultloadingStats)
 
   // Display URL (IP address/port) to connect from a browser
-  useEffect(async () => setHostInfo(await sendEvent('hostInfo')), [])
+  useEffect(() => {
+    sendEvent('hostInfo').then(info => setHostInfo(info))
+  }, [])
 
-  useEffect(async () => {
-    const message = await sendEvent('getLoadingStatus')
-    setLoadingProgress(message)
-    if (message?.loadingComplete === true) {
-      document.getElementById('loadingProgressBar').style.opacity = 0
-    }
+  useEffect(() => {
+    sendEvent('getLoadingStatus').then(message => {
+      setLoadingProgress(message)
+      if (message?.loadingComplete === true) {
+        document.getElementById('loadingProgressBar').style.opacity = 0
+      }
+    })
 
-    setTimeout(async () => {
-      const update = await checkForUpdate()
-      setUpdate(update)
+    setTimeout(() => {
+      checkForUpdate().then(update => setUpdate(update))
     }, 3000)
   }, [connected])
 
-  useEffect(() => eventListener('loadingProgress', (message) => {
-    setLoadingProgress(message)
-    if (message?.loadingComplete === true) {
-      setTimeout(() => { document.getElementById('loadingProgressBar').style.opacity = 0 }, 500)
-    }
-  }), [])
+  useEffect(() => {
+    return eventListener('loadingProgress', (message) => {
+      setLoadingProgress(message)
+      if (message?.loadingComplete === true) {
+        setTimeout(() => { document.getElementById('loadingProgressBar').style.opacity = 0 }, 500)
+      }
+    })
+  }, [])
 
   return (
     <>
@@ -130,3 +135,8 @@ export default function IndexPage () {
     </>
   )
 }
+
+export default dynamic(() => Promise.resolve(LauncherContent), {
+  ssr: false,
+  loading: () => null
+})

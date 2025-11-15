@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"strconv"
 	"strings"
 	"time"
 
@@ -23,6 +24,41 @@ type Release struct {
 	DownloadUrl      string `json:"downloadUrl"`
 	ReleaseNotes     string `json:"releaseNotes"`
 	IsUpgrade        bool   `json:"isUpgrade"`
+}
+
+// compareVersions compares two semver version strings
+// Returns 1 if v1 > v2, -1 if v1 < v2, 0 if equal
+func compareVersions(v1, v2 string) int {
+	parts1 := strings.Split(v1, ".")
+	parts2 := strings.Split(v2, ".")
+
+	// Pad shorter version with zeros
+	maxLen := len(parts1)
+	if len(parts2) > maxLen {
+		maxLen = len(parts2)
+	}
+
+	for len(parts1) < maxLen {
+		parts1 = append(parts1, "0")
+	}
+	for len(parts2) < maxLen {
+		parts2 = append(parts2, "0")
+	}
+
+	// Compare each part
+	for i := 0; i < maxLen; i++ {
+		n1, _ := strconv.Atoi(parts1[i])
+		n2, _ := strconv.Atoi(parts2[i])
+
+		if n1 > n2 {
+			return 1
+		}
+		if n1 < n2 {
+			return -1
+		}
+	}
+
+	return 0
 }
 
 func CheckForUpdate() (bool, error) {
@@ -144,7 +180,7 @@ func GetLatestRelease() (Release, error) {
 	release.ProductVersion = productVersion
 	release.DownloadUrl = downloadUrl
 	release.ReleaseNotes = releaseNotes
-	release.IsUpgrade = !(installedVersion == productVersion)
+	release.IsUpgrade = compareVersions(productVersion, installedVersion) > 0
 
 	return release, nil
 }

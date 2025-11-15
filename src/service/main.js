@@ -41,7 +41,7 @@ const DEVELOPMENT = commandLineArgs.dev || false // Development mode
 const isPkg = typeof process.pkg !== 'undefined'
 const WEB_DIR = isPkg
   ? path.join(path.dirname(process.execPath), 'client')
-  : 'build/client'
+  : path.join(__dirname, '../../build/client')
 
 const LOG_DIR = getLogDir()
 
@@ -51,6 +51,12 @@ if (!fs.existsSync(LOG_DIR)) {
   process.exit(1)
 } else {
   console.log('Loading save game data from', LOG_DIR)
+}
+
+// Check if web directory exists
+if (!fs.existsSync(WEB_DIR)) {
+  console.error('ERROR: Web directory not found:', WEB_DIR)
+  process.exit(1)
 }
 
 function getLogDir () {
@@ -161,11 +167,25 @@ webSocketServer.on('error', function (error) {
     console.error(`Failed to start service, port ${PORT} already in use.`)
     process.exit(1)
   }
+  console.error('WebSocket Server Error:', error)
 })
 
 // Start server
-httpServer.listen(PORT)
-console.log(`Listening on port ${PORT}…`)
+httpServer.on('error', (error) => {
+  console.error('HTTP Server Error:', error)
+  if (error.code === 'EADDRINUSE') {
+    console.error(`Failed to start service, port ${PORT} already in use.`)
+  }
+  process.exit(1)
+})
 
-// Initialize app - start parsing data and watching for game state changes
-setTimeout(() => init(), 500)
+httpServer.listen(PORT, async () => {
+  console.log(`Listening on port ${PORT}...`)
+  // Initialize app - start parsing data and watching for game state changes
+  try {
+    await init()
+  } catch (error) {
+    console.error('ERROR: Failed to initialize service:', error)
+    process.exit(1)
+  }
+})

@@ -78,6 +78,18 @@ async function build () {
   copyRecursive(dataSource, dataTarget)
   console.log(`Copied data files to ${dataTarget}`)
 
+  // Copy client files next to exe for runtime access (pkg mode)
+  console.log('Copying client files for pkg mode...')
+  const clientSource = path.join(BUILD_DIR, 'client')
+  const clientTarget = path.join(BIN_DIR, 'client')
+
+  if (fs.existsSync(clientSource)) {
+    copyRecursive(clientSource, clientTarget)
+    console.log(`Copied client files to ${clientTarget}`)
+  } else {
+    console.warn('Warning: Client build directory not found. Run "npm run build:client" first.')
+  }
+
   // Note: rcedit modifies PE headers and corrupts pkg binaries
   // Icon/VersionInfo must be set before pkg bundling or using alternative tools
   console.log('Build complete!')

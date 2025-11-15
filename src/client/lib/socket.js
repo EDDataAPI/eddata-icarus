@@ -1,5 +1,5 @@
 /* global WebSocket, CustomEvent */
-import { createContext, useState, useContext } from 'react'
+import { createContext, useState, useContext, useEffect } from 'react'
 import notification from 'lib/notification'
 
 let socket = null// Store socket connection (defaults to null)
@@ -17,51 +17,75 @@ const socketOptions = {
   notifications: true
 }
 
-function socketDebugMessage () { /* console.log(...arguments) */ }
+function socketDebugMessage () { console.log(...arguments) }
 
 function connect (socketState, setSocketState) {
-  if (socket !== null) return
+  console.log('[SOCKET] connect() called')
+  if (socket !== null) {
+    console.log('[SOCKET] Socket already exists, skipping')
+    return
+  }
 
   // Skip connection during server-side rendering
-  if (typeof window === 'undefined') return
+  if (typeof window === 'undefined') {
+    console.log('[SOCKET] Server-side rendering detected, skipping')
+    return
+  }
+
+  console.log('[SOCKET] Initializing WebSocket connection to ws://' + window.location.host)
 
   // Reset on reconnect
   callbackHandlers = {}
   deferredEventQueue = []
 
-  socket = new WebSocket('ws://' + window.location.host)
+  try {
+    socket = new WebSocket('ws://' + window.location.host)
+    console.log('[SOCKET] WebSocket created successfully')
+  } catch (error) {
+    console.error('[SOCKET] ERROR creating WebSocket:', error)
+    if (typeof window !== 'undefined') window.alert('SOCKET ERROR: Failed to create WebSocket\n' + error.message)
+    return
+  }
   socket.onmessage = (event) => {
-    const { requestId, name, message } = JSON.parse(event.data)
-    // Invoke callback to handler (if there is one)
-    if (requestId && callbackHandlers[requestId]) callbackHandlers[requestId](event, setSocketState)
+    console.log('[SOCKET] Message received:', event.data.substring(0, 100))
+    let requestId, name, message
+    try {
+      const parsed = JSON.parse(event.data)
+      requestId = parsed.requestId
+      name = parsed.name
+      message = parsed.message
+      // Invoke callback to handler (if there is one)
+      if (requestId && callbackHandlers[requestId]) callbackHandlers[requestId](event, setSocketState)
 
-    // Updating resync whern loading completes tells any components to resync
-    // with the server. it is useful for remote clients that disconnects then
-    // reconnects to tell them to update once the service is ready.
-    if (name === 'loadingProgress') {
-      if (message.loadingComplete) {
-        setSocketState(prevState => ({
-          ...prevState,
-          ready: true
-        }))
+      // Updating resync whern loading completes tells any components to resync
+      // with the server. it is useful for remote clients that disconnects then
+      // reconnects to tell them to update once the service is ready.
+      if (name === 'loadingProgress') {
+        if (message.loadingComplete) {
+          console.log('[SOCKET] Loading complete, setting ready=true')
+          setSocketState(prevState => ({
+            ...prevState,
+            ready: true
+          }))
+        }
       }
-    }
 
-    // Broadcast event to anything that is listening for an event with this name
-    if (!requestId && name) {
-      window.dispatchEvent(new CustomEvent(`socketEvent_${name}`, { detail: message }))
+      // Broadcast event to anything that is listening for an event with this name
+      if (!requestId && name) {
+        window.dispatchEvent(new CustomEvent(`socketEvent_${name}`, { detail: message }))
 
-      // When a broadcast message is received, use recentBroadcastEvents to
-      // track recent requests so the activity monitor in the UI can reflect
-      // that there is activity and that the client is receiving events.
-      recentBroadcastEvents++
-      setTimeout(() => {
-        recentBroadcastEvents--
-        setSocketState(prevState => ({
-          ...prevState,
-          active: socketRequestsPending()
-        }))
-      }, 500)
+        // When a broadcast message is received, use recentBroadcastEvents to
+        // track recent requests so the activity monitor in the UI can reflect
+        // that there is activity and that the client is receiving events.
+        recentBroadcastEvents++
+        setTimeout(() => {
+          recentBroadcastEvents--
+          setSocketState(prevState => ({
+            ...prevState,
+            active: socketRequestsPending()
+          }))
+        }, 500)
+      }
 
       // Trigger notifications for key actions
       // TODO Refactor out into a seperate handler
@@ -86,6 +110,8 @@ function connect (socketState, setSocketState) {
           if (message.event === 'Scanned') notification('Scan detected')
         }
       } catch (e) { console.log('NOTIFICATION_ERROR', e) }
+    } catch (error) {
+      console.error('[SOCKET] ERROR in onmessage:', error)
     }
     socketDebugMessage('Message received from socket server', requestId, name, message)
   }
@@ -129,6 +155,7 @@ function connect (socketState, setSocketState) {
     }
   }
   socket.onclose = (e) => {
+    console.log('[SOCKET] WebSocket closed, code:', e.code, 'reason:', e.reason)
     socket = null
     socketDebugMessage('Disconnected from socket server (will attempt reconnection)')
     setSocketState(prevState => ({
@@ -141,6 +168,8 @@ function connect (socketState, setSocketState) {
   }
 
   socket.onerror = function (err) {
+    console.error('[SOCKET] WebSocket error:', err)
+    if (typeof window !== 'undefined') window.alert('WEBSOCKET ERROR: ' + (err.message || JSON.stringify(err)))
     socketDebugMessage('Socket error', err.message)
     socket.close()
   }
@@ -151,9 +180,15 @@ const SocketContext = createContext()
 function SocketProvider ({ children }) {
   const [socketState, setSocketState] = useState(defaultSocketState)
 
-  if (typeof WebSocket !== 'undefined' && socketState.connected !== true) {
-    connect(socketState, setSocketState)
-  }
+  useEffect(() => {
+    console.log('SocketProvider useEffect running', typeof WebSocket)
+    if (typeof WebSocket !== 'undefined') {
+      console.log('Calling connect()')
+      connect(socketState, setSocketState)
+    }
+  }, [])
+
+  console.log('SocketProvider rendering', socketState)
 
   return (
     <SocketContext.Provider value={socketState}>

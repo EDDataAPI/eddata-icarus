@@ -5,6 +5,21 @@ import { loadColorSettings, saveColorSettings } from 'components/settings'
 import '../public/fonts/icarus-terminal/icarus-terminal.css'
 import '../css/main.css'
 
+// Global error handlers for debugging
+if (typeof window !== 'undefined') {
+  window.onerror = function (message, source, lineno, colno, error) {
+    console.error('[GLOBAL ERROR]', message, 'at', source, lineno, colno)
+    console.error('[GLOBAL ERROR] Stack:', error?.stack)
+    window.alert('GLOBAL ERROR:\n' + message + '\n\nFile: ' + source + '\nLine: ' + lineno + '\n\nStack:\n' + (error?.stack || 'No stack'))
+    return false
+  }
+
+  window.addEventListener('unhandledrejection', function (event) {
+    console.error('[UNHANDLED PROMISE]', event.reason)
+    window.alert('UNHANDLED PROMISE REJECTION:\n' + event.reason)
+  })
+}
+
 const handleNavigationClick = (navigation, index) => {
   const button = document.querySelector(`#${navigation}Navigation button[data-${navigation}-navigation='${index}']`)
   if (button) button.click()
@@ -68,6 +83,7 @@ const handleKeyPress = (event) => {
 export default class MyApp extends App {
   constructor (props) {
     super(props)
+    this.state = { mounted: false }
     if (typeof window !== 'undefined') {
       // Load settings at startup
       loadColorSettings()
@@ -97,11 +113,17 @@ export default class MyApp extends App {
     }
   }
 
+  componentDidMount () {
+    this.setState({ mounted: true })
+  }
+
   render () {
+    if (!this.state.mounted) return null
+
     const { Component, pageProps } = this.props
     return (
       <SocketProvider>
-        <div id='notifications' style={{ transition: '1s all ease-in-out', position: 'fixed', zIndex: 9999 }}>
+        <div suppressHydrationWarning id='notifications' style={{ transition: '1s all ease-in-out', position: 'fixed', zIndex: 9999 }}>
           <Toaster
             position='bottom-right'
             toastOptions={{

@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import animateTableEffect from 'lib/animate-table-effect'
 import { useSocket, sendEvent, eventListener } from 'lib/socket'
@@ -7,7 +8,7 @@ import Layout from 'components/layout'
 import Panel from 'components/panel'
 import CopyOnClick from 'components/copy-on-click'
 
-export default function NavListPage () {
+function NavListPageContent () {
   const router = useRouter()
   const { query } = router
   const { connected, active, ready } = useSocket()
@@ -31,31 +32,36 @@ export default function NavListPage () {
     router.push({ pathname: '/nav/map', query: { system: searchInput.toLowerCase() } })
   }
 
-  useEffect(async () => {
+  useEffect(() => {
     if (!connected || !router.isReady) return
-    const [newSystem, newNavRoute] = await Promise.all([
+    Promise.all([
       sendEvent('getSystem', query.system ? { name: query.system, useCache: true } : null),
       sendEvent('getNavRoute')
-    ])
-    if (newSystem) setSystem(newSystem)
-    if (newNavRoute) setNavRoute(newNavRoute)
-    setComponentReady(true)
+    ]).then(([newSystem, newNavRoute]) => {
+      if (newSystem) setSystem(newSystem)
+      if (newNavRoute) setNavRoute(newNavRoute)
+      setComponentReady(true)
+    })
   }, [connected, ready, router.isReady])
 
-  useEffect(() => eventListener('newLogEntry', async (log) => {
-    if (['Location', 'FSDJump'].includes(log.event)) {
-      const newNavRoute = await sendEvent('getNavRoute')
-      if (newNavRoute) setNavRoute(newNavRoute)
-    }
-  }))
+  useEffect(() => {
+    return eventListener('newLogEntry', async (log) => {
+      if (['Location', 'FSDJump'].includes(log.event)) {
+        const newNavRoute = await sendEvent('getNavRoute')
+        if (newNavRoute) setNavRoute(newNavRoute)
+      }
+    })
+  })
 
-  useEffect(() => eventListener('gameStateChange', async (log) => {
-    const newNavRoute = await sendEvent('getNavRoute')
-    // TODO Check destination system and only update navroute if different
-    // to current destination and if it is then execute setScrolled(false) so
-    // that the route scroll position will update
-    if (newNavRoute) setNavRoute(newNavRoute)
-  }))
+  useEffect(() => {
+    return eventListener('gameStateChange', async (log) => {
+      const newNavRoute = await sendEvent('getNavRoute')
+      // TODO Check destination system and only update navroute if different
+      // to current destination and if it is then execute setScrolled(false) so
+      // that the route scroll position will update
+      if (newNavRoute) setNavRoute(newNavRoute)
+    })
+  })
 
   useEffect(() => {
     if (!router.isReady) return
@@ -212,3 +218,8 @@ export default function NavListPage () {
     </Layout>
   )
 }
+
+export default dynamic(() => Promise.resolve(NavListPageContent), {
+  ssr: false,
+  loading: () => null
+})

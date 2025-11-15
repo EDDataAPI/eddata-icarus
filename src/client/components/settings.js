@@ -42,9 +42,9 @@ function SoundSettings ({ visible }) {
   const [preferences, setPreferences] = useState()
   const [voices, setVoices] = useState()
 
-  useEffect(async () => {
-    setPreferences(await sendEvent('getPreferences'))
-    setVoices(await sendEvent('getVoices'))
+  useEffect(() => {
+    sendEvent('getPreferences').then(prefs => setPreferences(prefs))
+    sendEvent('getVoices').then(v => setVoices(v))
   }, [visible])
 
   // Listen for changes to preferences triggered by other terminals
@@ -120,7 +120,7 @@ function ThemeSettings () {
     }
   }
 
-  useEffect(async () => {
+  useEffect(() => {
     window.addEventListener('storage', storageEventHandler)
     return () => window.removeEventListener('storage', storageEventHandler)
   }, [])
