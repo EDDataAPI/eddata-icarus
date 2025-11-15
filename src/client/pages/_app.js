@@ -5,6 +5,11 @@ import { loadColorSettings, saveColorSettings } from 'components/settings'
 import '../public/fonts/icarus-terminal/icarus-terminal.css'
 import '../css/main.css'
 
+const handleNavigationClick = (navigation, index) => {
+  const button = document.querySelector(`#${navigation}Navigation button[data-${navigation}-navigation='${index}']`)
+  if (button) button.click()
+}
+
 const handleKeyPress = (event) => {
   const element = document.activeElement.tagName
 
@@ -12,7 +17,7 @@ const handleKeyPress = (event) => {
   if (element.toLowerCase() === 'input') {
     // If ESC is pressed, then remove focus from input
     if (event.key === 'Escape') document.body.click()
-    
+
     // If UP or DOWN arrow is pressed then remove focus
     if (['ArrowUp', 'ArrowDown'].includes(event.key)) document.body.click()
 
@@ -20,76 +25,44 @@ const handleKeyPress = (event) => {
   }
 
   try {
-    switch(event.key) {
-      case "1":
-        if (event.getModifierState('Alt')) {
-          return document.querySelector(`#secondaryNavigation button[data-secondary-navigation='1']`).click() 
-        } else {
-          return document.querySelector(`#primaryNavigation button[data-primary-navigation='1']`).click()
-        }
-      case "2":
-        if (event.getModifierState('Alt')) {
-          return document.querySelector(`#secondaryNavigation button[data-secondary-navigation='2']`).click() 
-        } else {
-          return document.querySelector(`#primaryNavigation button[data-primary-navigation='2']`).click()
-        }
-      case "3":
-        if (event.getModifierState('Alt')) {
-          return document.querySelector(`#secondaryNavigation button[data-secondary-navigation='3']`).click() 
-        } else {
-          return document.querySelector(`#primaryNavigation button[data-primary-navigation='3']`).click()
-        }
-      case "4":
-        if (event.getModifierState('Alt')) {
-          return document.querySelector(`#secondaryNavigation button[data-secondary-navigation='4']`).click() 
-        } else {
-          return document.querySelector(`#primaryNavigation button[data-primary-navigation='4']`).click()
-        }
-      case "5":
-        if (event.getModifierState('Alt')) {
-          return document.querySelector(`#secondaryNavigation button[data-secondary-navigation='5']`).click() 
-        } else {
-          return document.querySelector(`#primaryNavigation button[data-primary-navigation='5']`).click()
-        }
-      case "6":
-        if (event.getModifierState('Alt')) {
-          return document.querySelector(`#secondaryNavigation button[data-secondary-navigation='6']`).click() 
-        } else {
-          return document.querySelector(`#primaryNavigation button[data-primary-navigation='6']`).click()
-        }
-      case "6":
-        if (event.getModifierState('Alt')) {
-          return document.querySelector(`#secondaryNavigation button[data-secondary-navigation='7']`).click() 
-        } else {
-          return document.querySelector(`#primaryNavigation button[data-primary-navigation='7']`).click()
-        }
-      case "ArrowUp":
-        if (!document.querySelector('#secondaryNavigation')) return
-        const previousSecondaryButtonNumber = parseInt(document.querySelector('#secondaryNavigation button.button--active').dataset.secondaryNavigation) - 1
-        const previousSecondaryButton = document.querySelector(`#secondaryNavigation button[data-secondary-navigation='${previousSecondaryButtonNumber}']`)
-        if (previousSecondaryButton) previousSecondaryButton.click()
+    const key = event.key
+    const isAlt = event.getModifierState('Alt')
+
+    // Handle number keys 1-7
+    if (/^[1-7]$/.test(key)) {
+      const navigation = isAlt ? 'secondary' : 'primary'
+      handleNavigationClick(navigation, key)
+      return
+    }
+
+    // Handle arrow keys
+    switch (key) {
+      case 'ArrowUp':
+      case 'ArrowDown': {
+        const secondaryNav = document.querySelector('#secondaryNavigation')
+        if (!secondaryNav) return
+
+        const activeButton = secondaryNav.querySelector('button.button--active')
+        if (!activeButton) return
+
+        const currentIndex = parseInt(activeButton.dataset.secondaryNavigation)
+        const newIndex = key === 'ArrowUp' ? currentIndex - 1 : currentIndex + 1
+        handleNavigationClick('secondary', newIndex)
         return
-      case "ArrowDown":
-        if (!document.querySelector('#secondaryNavigation')) return
-        const nextSecondaryButtonNumber = parseInt(document.querySelector('#secondaryNavigation button.button--active').dataset.secondaryNavigation) + 1
-        const nextSecondaryButton = document.querySelector(`#secondaryNavigation button[data-secondary-navigation='${nextSecondaryButtonNumber}']`)
-        if (nextSecondaryButton) nextSecondaryButton.click()
+      }
+      case 'ArrowLeft':
+      case 'ArrowRight': {
+        const activeButton = document.querySelector('#primaryNavigation button.button--active')
+        if (!activeButton) return
+
+        const currentIndex = parseInt(activeButton.dataset.primaryNavigation)
+        const newIndex = key === 'ArrowLeft' ? currentIndex - 1 : currentIndex + 1
+        handleNavigationClick('primary', newIndex)
         return
-      case "ArrowLeft":
-        const previousPrimaryButtonNumber = parseInt(document.querySelector('#primaryNavigation button.button--active').dataset.primaryNavigation) - 1
-        const previousPrimaryButton = document.querySelector(`#primaryNavigation button[data-primary-navigation='${previousPrimaryButtonNumber}']`)
-        if (previousPrimaryButton) previousPrimaryButton.click()
-        return
-      case "ArrowRight":
-        const nextPrimaryButtonNumber = parseInt(document.querySelector('#primaryNavigation button.button--active').dataset.primaryNavigation) + 1
-        const nextPrimaryButton = document.querySelector(`#primaryNavigation button[data-primary-navigation='${nextPrimaryButtonNumber}']`)
-        if (nextPrimaryButton) nextPrimaryButton.click()
-        return 
-      default:
-        //console.log(`Key pressed: ${event.key}`)
+      }
     }
   } catch (e) {
-    //console.log(e)
+    // Silent fail for navigation errors
   }
 }
 
@@ -122,7 +95,7 @@ export default class MyApp extends App {
       })
 
       document.addEventListener('keydown', handleKeyPress)
-    } 
+    }
   }
 
   render () {

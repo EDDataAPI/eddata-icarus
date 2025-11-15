@@ -32,12 +32,12 @@ You can run ICARUS Terminal in a native window, on multiple windows/displays, as
 
 ## Requirements
 
-The self-contained installer is around 20 MB and has no dependancies. If you are running an older but supported release of Windows, any missing dependancies will be automatically installed.
+The self-contained installer is around 20 MB and has no dependencies. If you are running an older but supported release of Windows, any missing dependencies will be automatically installed.
 
 * Windows 10 or newer required.
-* No dependancies are required to install the application.
+* No dependencies are required to install the application.
 * No manual configuration or setup is required, it will automatically find your game data.
-* No additional diskspace is required to store game data. Recent game data is loaded in to memory when launched and streamed in real time when the game is active, it is not persisted or cached to disk.
+* No additional disk space is required to store game data. Recent game data is loaded in to memory when launched and streamed in real time when the game is active, it is not persisted or cached to disk.
 
 ### Notes
 
@@ -47,7 +47,7 @@ The self-contained installer is around 20 MB and has no dependancies. If you are
 * The application will run against the latest version of Elite Dangerous (Odyssey) and older releases (e.g. Horizons), but it is currently explicitly designed for use with the latest versions. Changes to the game API may impact functionality when using ICARUS Terminal with older versions of the game.
 * The application includes a web interface to allow access from remote devices. The web interface is enabled by default while the application is running.
 
-The web interface relies on advanced browser functionality for rendering and works best on native Google Chrome browsers (e.g. Google Chrome for Windows, Mac, ChromeOS, Android). Other browsers (e.g. Safari, Firefox, Chromium) may use fallback rendering and/or lack required features for full compatbility / optimal user experience.
+The web interface relies on advanced browser functionality for rendering and works best on native Google Chrome browsers (e.g. Google Chrome for Windows, Mac, ChromeOS, Android). Other browsers (e.g. Safari, Firefox, Chromium) may use fallback rendering and/or lack required features for full compatibility / optimal user experience.
 
 ## Developer Documentation
  
@@ -71,7 +71,7 @@ With that done, anytime you want to start ICARUS Terminal, all you need to do is
 
     npm start
 
-This will run in debug mode which is not quite the same as a production build (it's not as optimised) but should work just fine.
+This will run in debug mode which is not quite the same as a production build (it's not as optimized) but should work just fine.
 
 ## Legal
 
@@ -95,7 +95,7 @@ _ICARUS Terminal would not be possible without work from dozens of enthusiasts a
 
 * The name ICARUS was suggested by [SpaceNinjaBear](https://www.reddit.com/user/SpaceNinjaBear) on Reddit.
 * Loading animation by [James Panter](http://codepen.io/jpanter/pen/PWWQXK).
-* Includes origional icons, icons inspired by those found in Elite Dangerous and icons based on those from [edassets.org](https://edassets.org).
+* Includes original icons, icons inspired by those found in Elite Dangerous and icons based on those from [edassets.org](https://edassets.org).
 * Uses stellar cartography data from the wonderful [EDSM API](https://www.edsm.net).
 * Includes game data collated and provided by [EDCD](https://github.com/EDCD/FDevIDs).
 * The [Jura font](https://fonts.google.com/specimen/Jura#glyphs) is included under the Open Font License.
