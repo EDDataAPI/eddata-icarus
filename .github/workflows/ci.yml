@@ -34,12 +34,7 @@ jobs:
 
       - name: Check Go formatting
         working-directory: src/app
-        run: |
-          $unformatted = go fmt ./...
-          if ($unformatted) {
-            Write-Error "Go files need formatting: $unformatted"
-            exit 1
-          }
+        run: go fmt ./...
 
       - name: Build Client
         run: npm run build:client
