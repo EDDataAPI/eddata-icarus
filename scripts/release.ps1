@@ -4,10 +4,10 @@
 param(
     [Parameter(Mandatory=$false)]
     [string]$Version,
-    
+
     [Parameter(Mandatory=$false)]
     [string]$Message = "Release",
-    
+
     [Parameter(Mandatory=$false)]
     [switch]$DryRun
 )
@@ -81,12 +81,12 @@ if ($status) {
 Write-Host "`nCreating Git tag $Version..." -ForegroundColor Cyan
 if (-not $DryRun) {
     git tag -a $Version -m "$Message"
-    
+
     if ($LASTEXITCODE -ne 0) {
         Write-Host "Error: Failed to create tag!" -ForegroundColor Red
         exit 1
     }
-    
+
     Write-Host "Tag created successfully." -ForegroundColor Green
 } else {
     Write-Host "[DRY RUN] Would create tag: git tag -a $Version -m `"$Message`"" -ForegroundColor Gray
@@ -96,7 +96,7 @@ if (-not $DryRun) {
 Write-Host "`nPushing tag to GitHub..." -ForegroundColor Cyan
 if (-not $DryRun) {
     git push origin $Version
-    
+
     if ($LASTEXITCODE -ne 0) {
         Write-Host "Error: Failed to push tag!" -ForegroundColor Red
         Write-Host "You can manually push with: git push origin $Version" -ForegroundColor Yellow
