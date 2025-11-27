@@ -199,10 +199,23 @@ function SocketProvider ({ children }) {
 
 function useSocket () { return useContext(SocketContext) }
 
+const CALLBACK_TIMEOUT_MS = 30000 // 30 second timeout for callbacks
+
 function sendEvent (name, message = null) {
   return new Promise((resolve, reject) => {
     const requestId = generateUuid()
+
+    // Timeout to prevent memory leaks from orphaned callbacks
+    const timeoutId = setTimeout(() => {
+      if (callbackHandlers[requestId]) {
+        delete callbackHandlers[requestId]
+        console.warn(`[SOCKET] Request ${requestId} (${name}) timed out after ${CALLBACK_TIMEOUT_MS}ms`)
+        reject(new Error(`Request timed out: ${name}`))
+      }
+    }, CALLBACK_TIMEOUT_MS)
+
     callbackHandlers[requestId] = (event, setSocketState) => {
+      clearTimeout(timeoutId)
       const { message } = JSON.parse(event.data)
       delete callbackHandlers[requestId]
       setSocketState(prevState => ({
@@ -232,7 +245,16 @@ function socketRequestsPending () {
 }
 
 function generateUuid () {
-  return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
+  // Use crypto API for better randomness if available
+  if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+    return crypto.randomUUID()
+  }
+  // Fallback for older browsers
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+    const r = Math.random() * 16 | 0
+    const v = c === 'x' ? r : (r & 0x3 | 0x8)
+    return v.toString(16)
+  })
 }
 
 module.exports = {

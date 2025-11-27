@@ -86,7 +86,7 @@ jobs:
       - name: Upload Installer as Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: icarus-terminal-installer
+          name: eddata-icarus-installer
           path: ${{ steps.find_installer.outputs.INSTALLER_PATH }}
           retention-days: 30
 
@@ -96,12 +96,12 @@ jobs:
         with:
           files: ${{ steps.find_installer.outputs.INSTALLER_PATH }}
           tag_name: ${{ github.ref_name }}
-          name: ICARUS Terminal ${{ github.ref_name }}
+          name: EDData Icarus ${{ github.ref_name }}
           draft: false
           prerelease: ${{ contains(github.ref_name, 'alpha') || contains(github.ref_name, 'beta') || contains(github.ref_name, 'rc') }}
           generate_release_notes: true
           body: |
-            ## ICARUS Terminal v${{ steps.version.outputs.VERSION }}
+            ## EDData Icarus v${{ steps.version.outputs.VERSION }}
 
             ### 📦 Installation
             Download and run `${{ steps.find_installer.outputs.INSTALLER_NAME }}`
@@ -110,7 +110,7 @@ jobs:
             - Updated to Next.js 15 with Turbopack
             - Updated to React 19 with new Compiler
             - Updated to Node.js 24 LTS
-            - Updated to Go 1.24
+            - Updated to Go 1.25
             - Performance improvements and bug fixes
 
             ### 📋 Requirements

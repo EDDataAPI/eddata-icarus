@@ -71,7 +71,7 @@ func main() {
 
 	pathToExecutable, err := os.Executable()
 	if err != nil {
-		dialog.Message("%s", "Failed to start ICARUS Terminal Service\n\nUnable to determine current directory.").Title("Error").Error()
+		dialog.Message("%s", "Failed to start EDData Icarus Service\n\nUnable to determine current directory.").Title("Error").Error()
 		exitApplication(1)
 	}
 	dirname = filepath.Dir(pathToExecutable)
@@ -94,7 +94,7 @@ func main() {
 
 	// Check not already running
 	if checkProcessAlreadyExists(LAUNCHER_WINDOW_TITLE) {
-		dialog.Message("%s", "ICARUS Terminal is already running.\n\nYou can only run one instance at a time.").Title("Information").Info()
+		dialog.Message("%s", "EDData Icarus is already running.\n\nYou can only run one instance at a time.").Title("Information").Info()
 		exitApplication(1)
 	}
 
@@ -126,7 +126,7 @@ func main() {
 	// Exit if service fails to start
 	if serviceCmdErr != nil {
 		fmt.Println("Error starting service", serviceCmdErr.Error())
-		dialog.Message("%s%s", "Failed to start ICARUS Terminal Service.\n\n", serviceCmdErr.Error()).Title("Error").Error()
+		dialog.Message("%s%s", "Failed to start EDData Icarus Service.\n\n", serviceCmdErr.Error()).Title("Error").Error()
 		exitApplication(1)
 	}
 
@@ -148,10 +148,10 @@ func main() {
 
 		if diff.Seconds() < 10 {
 			// Show alternate dialog message if fails within X seconds of startup
-			dialog.Message("%s", "ICARUS Terminal Service failed to start.\n\nAntiVirus or Firewall software may have prevented it from starting or it may be conflicting with another application.").Title("Error").Error()
+			dialog.Message("%s", "EDData Icarus Service failed to start.\n\nAntiVirus or Firewall software may have prevented it from starting or it may be conflicting with another application.").Title("Error").Error()
 		} else {
 			fmt.Println("Service stopped unexpectedly.")
-			dialog.Message("%s", "ICARUS Terminal Service stopped unexpectedly.").Title("Error").Error()
+			dialog.Message("%s", "EDData Icarus Service stopped unexpectedly.").Title("Error").Error()
 		}
 		exitApplication(1)
 	}()
@@ -223,11 +223,11 @@ func bindFunctionsToWebView(w webview2.WebView) {
 	var isPinned = false
 	defaultWindowStyle := win.GetWindowLong(hwnd, win.GWL_STYLE)
 
-	w.Bind("icarusTerminal_version", func() string {
+	w.Bind("edDataIcarus_version", func() string {
 		return GetCurrentAppVersion()
 	})
 
-	w.Bind("icarusTerminal_checkForUpdate", func() string {
+	w.Bind("edDataIcarus_checkForUpdate", func() string {
 		latestRelease, latestReleaseErr := GetLatestRelease()
 		if latestReleaseErr != nil {
 			return ""
@@ -241,19 +241,19 @@ func bindFunctionsToWebView(w webview2.WebView) {
 		return string(response)
 	})
 
-	w.Bind("icarusTerminal_installUpdate", func() {
+	w.Bind("edDataIcarus_installUpdate", func() {
 		InstallUpdate()
 	})
 
-	w.Bind("icarusTerminal_isFullScreen", func() bool {
+	w.Bind("edDataIcarus_isFullScreen", func() bool {
 		return isFullScreen
 	})
 
-	w.Bind("icarusTerminal_isPinned", func() bool {
+	w.Bind("edDataIcarus_isPinned", func() bool {
 		return isPinned
 	})
 
-	w.Bind("icarusTerminal_togglePinWindow", func() bool {
+	w.Bind("edDataIcarus_togglePinWindow", func() bool {
 		if isFullScreen {
 			// Do nothing if in fullscreen mode (option in UI should be disabled)
 			return false
@@ -282,7 +282,7 @@ func bindFunctionsToWebView(w webview2.WebView) {
 		return isPinned
 	})
 
-	w.Bind("icarusTerminal_toggleFullScreen", func() bool {
+	w.Bind("edDataIcarus_toggleFullScreen", func() bool {
 		// FIXME Always go fullscreen on main monitor.
 		// If the window is on a second monitor, it should go fullscreen on that
 		// display instead. See the following URL for example of how to handle
@@ -322,7 +322,7 @@ func bindFunctionsToWebView(w webview2.WebView) {
 		return isFullScreen
 	})
 
-	w.Bind("icarusTerminal_newWindow", func() int {
+	w.Bind("edDataIcarus_newWindow", func() int {
 		terminalCmdInstance := exec.Command(filepath.Join(dirname, TERMINAL_EXECUTABLE), "--terminal=true", fmt.Sprintf("--port=%d", port))
 		terminalCmdInstance.Dir = dirname
 		terminalCmdErr := terminalCmdInstance.Start()
@@ -343,11 +343,11 @@ func bindFunctionsToWebView(w webview2.WebView) {
 		return 0
 	})
 
-	w.Bind("icarusTerminal_openReleaseNotes", func() {
+	w.Bind("edDataIcarus_openReleaseNotes", func() {
 		runUnelevated(RELEASE_NOTES_URL)
 	})
 
-	w.Bind("icarusTerminal_openTerminalInBrowser", func() {
+	w.Bind("edDataIcarus_openTerminalInBrowser", func() {
 		runUnelevated(url)
 	})
 
@@ -364,7 +364,7 @@ func bindFunctionsToWebView(w webview2.WebView) {
 		})
 	*/
 
-	w.Bind("icarusTerminal_quit", func() int {
+	w.Bind("edDataIcarus_quit", func() int {
 		exitApplication(0)
 		return 0
 	})

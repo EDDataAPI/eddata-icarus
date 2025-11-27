@@ -77,10 +77,10 @@ export default function Header ({ connected, active }) {
   }
 
   useEffect(() => {
-    // icarusTerminal_* methods are not always accessible while the app is loading.
+    // edDataIcarus_* methods are not always accessible while the app is loading.
     // This handles that by calling them when the component is mounted.
     // It uses a global for isWindowsApp to reduce UI flicker.
-    if (typeof window !== 'undefined' && typeof window.icarusTerminal_version === 'function') {
+    if (typeof window !== 'undefined' && typeof window.edDataIcarus_version === 'function') {
       IS_WINDOWS_APP = true
     }
     isWindowFullScreen().then(fullScreen => setIsFullScreen(fullScreen))

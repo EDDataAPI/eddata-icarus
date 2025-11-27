@@ -1,15 +1,22 @@
-!define APP_NAME "ICARUS Terminal"
-!define COMP_NAME "ICARUS"
+!define APP_NAME "EDData Icarus"
+!define COMP_NAME "EDData"
 !define VERSION "${PRODUCT_VERSION}"
-!define COPYRIGHT "ICARUS"
-!define DESCRIPTION "Application"
-!define INSTALLER_NAME "../../dist/ICARUS Setup.exe"
-!define MAIN_APP_EXE "ICARUS Terminal.exe"
-!define SERVICE_EXE "ICARUS Service.exe"
+!define COPYRIGHT "EDData"
+!define DESCRIPTION "Companion App for Elite Dangerous"
+!define INSTALLER_NAME "../../dist/EDData Icarus Setup.exe"
+!define MAIN_APP_EXE "EDData Icarus.exe"
+!define SERVICE_EXE "EDData Icarus Service.exe"
 !define INSTALL_TYPE "SetShellVarContext current"
 !define REG_ROOT "HKCU"
 !define REG_APP_PATH "Software\Microsoft\Windows\CurrentVersion\App Paths\${MAIN_APP_EXE}"
 !define UNINSTALL_PATH "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APP_NAME}"
+
+; License file
+!define LICENSE_TXT "..\..\LICENSE"
+
+; Start menu folder
+!define REG_START_MENU "Start Menu Folder"
+Var SM_Folder
 
 ######################################################################
 
@@ -29,7 +36,7 @@ OutFile "${INSTALLER_NAME}"
 BrandingText "${APP_NAME}"
 XPStyle on
 InstallDirRegKey "${REG_ROOT}" "${REG_APP_PATH}" ""
-InstallDir "$PROGRAMFILES\ICARUS Terminal"
+InstallDir "$PROGRAMFILES\EDData Icarus"
 
 ######################################################################
 
@@ -52,9 +59,12 @@ InstallDir "$PROGRAMFILES\ICARUS Terminal"
 !insertmacro MUI_PAGE_LICENSE "${LICENSE_TXT}"
 !endif
 
+; Directory selection page
+!insertmacro MUI_PAGE_DIRECTORY
+
 !ifdef REG_START_MENU
 !define MUI_STARTMENUPAGE_NODISABLE
-!define MUI_STARTMENUPAGE_DEFAULTFOLDER "ICARUS Terminal"
+!define MUI_STARTMENUPAGE_DEFAULTFOLDER "EDData Icarus"
 !define MUI_STARTMENUPAGE_REGISTRY_ROOT "${REG_ROOT}"
 !define MUI_STARTMENUPAGE_REGISTRY_KEY "${UNINSTALL_PATH}"
 !define MUI_STARTMENUPAGE_REGISTRY_VALUENAME "${REG_START_MENU}"
@@ -82,7 +92,21 @@ InstallDir "$PROGRAMFILES\ICARUS Terminal"
 
 # Check if application is running before install
 Function .onInit
-	# Check if ICARUS Terminal is running
+	# Check for existing installation
+	ReadRegStr $0 ${REG_ROOT} "${UNINSTALL_PATH}" "InstallLocation"
+	StrCmp $0 "" noExistingInstall
+		# Existing installation found - set install directory to previous location
+		StrCpy $INSTDIR $0
+		MessageBox MB_YESNO|MB_ICONQUESTION \
+			"${APP_NAME} is already installed in:$\n$\n$0$\n$\nDo you want to upgrade the existing installation?" \
+			/SD IDYES IDYES checkRunning
+		# User chose No - let them choose a different directory
+		Goto checkRunning
+
+	noExistingInstall:
+
+	checkRunning:
+	# Check if EDData Icarus is running
 	FindWindow $0 "" "${APP_NAME}"
 	StrCmp $0 0 checkService
 		MessageBox MB_OKCANCEL|MB_ICONEXCLAMATION \
@@ -91,7 +115,7 @@ Function .onInit
 		Abort
 
 	checkService:
-	# Check if ICARUS Service is running
+	# Check if EDData Icarus Service is running
 	nsExec::ExecToStack 'tasklist /FI "IMAGENAME eq ${SERVICE_EXE}" /NH'
 	Pop $0
 	Pop $1
@@ -112,8 +136,8 @@ Section -MainProgram
 ${INSTALL_TYPE}
 SetOverwrite ifnewer
 SetOutPath "$INSTDIR"
-File "..\..\build\bin\ICARUS Service.exe"
-File "..\..\build\bin\ICARUS Terminal.exe"
+File "..\..\build\bin\EDData Icarus Service.exe"
+File "..\..\build\bin\EDData Icarus.exe"
 File "..\..\build\bin\WebView2Loader.dll"
 File "..\assets\icon.ico"
 
@@ -147,12 +171,12 @@ CreateShortCut "$SMPROGRAMS\$SM_Folder\${APP_NAME} Website.lnk" "$INSTDIR\${APP_
 !endif
 
 !ifndef REG_START_MENU
-CreateDirectory "$SMPROGRAMS\ICARUS Terminal"
-CreateShortCut "$SMPROGRAMS\ICARUS Terminal\${APP_NAME}.lnk" "$INSTDIR\${MAIN_APP_EXE}"
+CreateDirectory "$SMPROGRAMS\EDData Icarus"
+CreateShortCut "$SMPROGRAMS\EDData Icarus\${APP_NAME}.lnk" "$INSTDIR\${MAIN_APP_EXE}"
 CreateShortCut "$DESKTOP\${APP_NAME}.lnk" "$INSTDIR\${MAIN_APP_EXE}"
 !ifdef WEB_SITE
 WriteIniStr "$INSTDIR\${APP_NAME} website.url" "InternetShortcut" "URL" "${WEB_SITE}"
-CreateShortCut "$SMPROGRAMS\ICARUS Terminal\${APP_NAME} Website.lnk" "$INSTDIR\${APP_NAME} website.url"
+CreateShortCut "$SMPROGRAMS\EDData Icarus\${APP_NAME} Website.lnk" "$INSTDIR\${APP_NAME} website.url"
 !endif
 !endif
 
@@ -183,8 +207,8 @@ nsExec::ExecToLog 'taskkill /F /IM "${SERVICE_EXE}" /T'
 Sleep 1000
 
 # Delete files
-Delete "$INSTDIR\ICARUS Service.exe"
-Delete "$INSTDIR\ICARUS Terminal.exe"
+Delete "$INSTDIR\EDData Icarus Service.exe"
+Delete "$INSTDIR\EDData Icarus.exe"
 Delete "$INSTDIR\WebView2Loader.dll"
 Delete "$INSTDIR\icon.ico"
 Delete "$INSTDIR\uninstall.exe"
@@ -212,13 +236,13 @@ RmDir "$SMPROGRAMS\$SM_Folder"
 !endif
 
 !ifndef REG_START_MENU
-Delete "$SMPROGRAMS\ICARUS Terminal\${APP_NAME}.lnk"
+Delete "$SMPROGRAMS\EDData Icarus\${APP_NAME}.lnk"
 !ifdef WEB_SITE
-Delete "$SMPROGRAMS\ICARUS Terminal\${APP_NAME} Website.lnk"
+Delete "$SMPROGRAMS\EDData Icarus\${APP_NAME} Website.lnk"
 !endif
 Delete "$DESKTOP\${APP_NAME}.lnk"
 
-RmDir "$SMPROGRAMS\ICARUS Terminal"
+RmDir "$SMPROGRAMS\EDData Icarus"
 !endif
 
 DeleteRegKey ${REG_ROOT} "${REG_APP_PATH}"

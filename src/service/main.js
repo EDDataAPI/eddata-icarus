@@ -31,7 +31,7 @@ const commandLineArgs = yargs
   .alias('h', 'help')
   .argv
 
-console.log(`ICARUS Terminal Service ${packageJson.version}`)
+console.log(`EDData Icarus Service ${packageJson.version}`)
 
 // Parse command line arguments
 const PORT = commandLineArgs.port || commandLineArgs.p || 3300 // Port to listen on
@@ -117,7 +117,18 @@ if (DEVELOPMENT) {
   httpServer = http.createServer(webServer)
 }
 
-const webSocketServer = new WebSocket.Server({ server: httpServer })
+const webSocketServer = new WebSocket.Server({
+  server: httpServer,
+  // Validate WebSocket connections - only allow localhost origins
+  verifyClient: (info) => {
+    const origin = info.origin || info.req.headers.origin || ''
+    const isLocalhost = origin.includes('localhost') || origin.includes('127.0.0.1') || origin === ''
+    if (!isLocalhost) {
+      console.warn('WebSocket connection rejected from origin:', origin)
+    }
+    return isLocalhost
+  }
+})
 
 function webSocketDebugMessage () { /* console.log(...arguments) */ }
 
@@ -179,8 +190,11 @@ httpServer.on('error', (error) => {
   process.exit(1)
 })
 
-httpServer.listen(PORT, async () => {
-  console.log(`Listening on port ${PORT}...`)
+// Bind to localhost only for security (prevents network exposure)
+const BIND_HOST = process.env.BIND_HOST || '127.0.0.1'
+
+httpServer.listen(PORT, BIND_HOST, async () => {
+  console.log(`Listening on ${BIND_HOST}:${PORT}...`)
   // Initialize app - start parsing data and watching for game state changes
   try {
     await init()
