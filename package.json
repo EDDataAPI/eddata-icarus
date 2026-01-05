@@ -32,7 +32,6 @@
     "changeexe": "^1.0.2",
     "csvtojson": "^2.0.10",
     "eslint": "^9.39.2",
-    "eslint-config-standard": "^17.1.0",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-n": "^17.23.1",
     "eslint-plugin-promise": "^7.2.1",
@@ -48,7 +47,6 @@
     "react-dom": "^19.2.3",
     "react-hot-toast": "^2.4.1",
     "sendkeys-js": "^0.0.4",
-    "standard": "^17.1.2",
     "svgtofont": "^6.5.0",
     "upx": "^1.0.6",
     "wikitext2plaintext": "^0.1.0",
@@ -71,12 +69,6 @@
   "engines": {
     "npm": ">=10.9.0",
     "node": ">=24.0.0"
-  },
-  "standard": {
-    "rules": {
-      "react/jsx-indent": "off",
-      "react/jsx-closing-tag-location": "off"
-    }
   },
   "pkg": {
     "assets": [
