@@ -3,8 +3,9 @@ const path = require('path')
 const { execSync } = require('child_process')
 const changeExe = require('changeexe')
 const UPX = require('upx')({ brute: true })
-const yargs = require('yargs')
-const commandLineArgs = yargs.argv
+const yargs = require('yargs/yargs')
+const { hideBin } = require('yargs/helpers')
+const commandLineArgs = yargs(hideBin(process.argv)).argv
 
 const {
   DEVELOPMENT_BUILD: DEVELOPMENT_BUILD_DEFAULT,

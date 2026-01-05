@@ -1,4 +1,3 @@
-/* global WebSocket, CustomEvent */
 import { createContext, useState, useContext, useEffect } from 'react'
 import notification from 'lib/notification'
 
@@ -257,7 +256,7 @@ function generateUuid () {
   })
 }
 
-module.exports = {
+export {
   SocketProvider,
   useSocket,
   sendEvent,

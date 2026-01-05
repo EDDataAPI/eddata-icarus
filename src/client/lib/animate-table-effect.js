@@ -1,5 +1,4 @@
-/* global IntersectionObserver */
-module.exports = () => {
+export default () => {
   const observer = new IntersectionObserver(callbackFunction, {})
   function callbackFunction (entries) {
     let shownItems = 0

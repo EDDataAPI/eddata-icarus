@@ -10,10 +10,11 @@ const http = require('http')
 const httpProxy = require('http-proxy')
 const proxy = httpProxy.createProxyServer({})
 const WebSocket = require('ws')
-const yargs = require('yargs')
+const yargs = require('yargs/yargs')
+const { hideBin } = require('yargs/helpers')
 const packageJson = require('../../package.json')
 
-const commandLineArgs = yargs
+const commandLineArgs = yargs(hideBin(process.argv))
   .help()
   .usage('Usage: $0 --save-game-dir <directory> [--port <port>]')
   .option('port', {

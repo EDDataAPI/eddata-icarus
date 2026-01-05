@@ -6,8 +6,9 @@ const fs = require('fs')
 const path = require('path')
 const { exec } = require('@yao-pkg/pkg')
 // const UPX = require('upx')({ brute: false }) // Brute on service seems to hang
-const yargs = require('yargs')
-const commandLineArgs = yargs.argv
+const yargs = require('yargs/yargs')
+const { hideBin } = require('yargs/helpers')
+const commandLineArgs = yargs(hideBin(process.argv)).argv
 
 const {
   DEBUG_CONSOLE: DEBUG_CONSOLE_DEFAULT,

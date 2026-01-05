@@ -99,7 +99,7 @@ function objectToHtml (obj, depth = 0, type = null, previousPropertyName) {
   return str
 }
 
-module.exports = {
+export {
   formatBytes,
   eliteDateTime,
   objectToHtml

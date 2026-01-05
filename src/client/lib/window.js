@@ -64,7 +64,7 @@ async function togglePinWindow () {
   if (isWindowsApp()) { return await window.edDataIcarus_togglePinWindow() }
 }
 
-module.exports = {
+export {
   isWindowsApp,
   isWindowFullScreen,
   isWindowPinned,

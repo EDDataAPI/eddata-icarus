@@ -404,7 +404,7 @@ function compareVersions (v1, v2) {
   return 0
 }
 
-module.exports = {
+export {
   Settings,
   loadColorSettings,
   loadDefaultColorSettings,
