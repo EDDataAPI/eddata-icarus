@@ -47,10 +47,16 @@ async function build () {
     }
   })
 
-  console.log('Installer created:', installerOutput.outFile)
+  console.log('Installer Output:', JSON.stringify(installerOutput, null, 2))
   console.log('Status:', installerOutput.status)
   if (installerOutput.warnings) {
     console.warn('Warnings:', installerOutput.warnings)
+  }
+  if (installerOutput.stdout) {
+    console.log('STDOUT:', installerOutput.stdout)
+  }
+  if (installerOutput.stderr) {
+    console.error('STDERR:', installerOutput.stderr)
   }
 
   if (SIGN_BUILD) {

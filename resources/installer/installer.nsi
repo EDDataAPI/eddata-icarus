@@ -8,11 +8,11 @@
 !define SERVICE_EXE "EDData-ICARUS Service.exe"
 !define INSTALL_TYPE "SetShellVarContext current"
 !define REG_ROOT "HKCU"
-!define REG_APP_PATH "Software\Microsoft\Windows\CurrentVersion\App Paths\${MAIN_APP_EXE}"
+!define REG_APP_PATH "Software\Microsoft\Windows\CurrentVersion\App Paths\${APP_EXE}"
 !define UNINSTALL_PATH "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APP_NAME}"
 
 ; License file
-!define LICENSE_TXT "..\..\LICENSE"
+!define LICENSE_TXT "..\..\LICENSE.md"
 
 ; Start menu folder
 !define REG_START_MENU "Start Menu Folder"
@@ -76,7 +76,7 @@ InstallDir "$PROGRAMFILES\EDData Icarus"
 # Pass the flag "--install" to let the app know it is being run by the installer
 # after install/update as an easy way to trigger any 'first run' actions.
 # There are better ways to do this, but it's much easier to do it this way.
-!define MUI_FINISHPAGE_RUN "$INSTDIR\${MAIN_APP_EXE}"
+!define MUI_FINISHPAGE_RUN "$INSTDIR\${APP_EXE}"
 !define MUI_FINISHPAGE_RUN_PARAMETERS "--install"
 !insertmacro MUI_PAGE_FINISH
 
@@ -161,8 +161,8 @@ WriteUninstaller "$INSTDIR\uninstall.exe"
 !ifdef REG_START_MENU
 !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
 CreateDirectory "$SMPROGRAMS\$SM_Folder"
-CreateShortCut "$SMPROGRAMS\$SM_Folder\${APP_NAME}.lnk" "$INSTDIR\${MAIN_APP_EXE}"
-CreateShortCut "$DESKTOP\${APP_NAME}.lnk" "$INSTDIR\${MAIN_APP_EXE}"
+	CreateShortCut "$SMPROGRAMS\$SM_Folder\${APP_NAME}.lnk" "$INSTDIR\${APP_EXE}"
+	CreateShortCut "$DESKTOP\${APP_NAME}.lnk" "$INSTDIR\${APP_EXE}"
 !ifdef WEB_SITE
 WriteIniStr "$INSTDIR\${APP_NAME} website.url" "InternetShortcut" "URL" "${WEB_SITE}"
 CreateShortCut "$SMPROGRAMS\$SM_Folder\${APP_NAME} Website.lnk" "$INSTDIR\${APP_NAME} website.url"
@@ -172,18 +172,18 @@ CreateShortCut "$SMPROGRAMS\$SM_Folder\${APP_NAME} Website.lnk" "$INSTDIR\${APP_
 
 !ifndef REG_START_MENU
 CreateDirectory "$SMPROGRAMS\EDData Icarus"
-CreateShortCut "$SMPROGRAMS\EDData Icarus\${APP_NAME}.lnk" "$INSTDIR\${MAIN_APP_EXE}"
-CreateShortCut "$DESKTOP\${APP_NAME}.lnk" "$INSTDIR\${MAIN_APP_EXE}"
+	CreateShortCut "$SMPROGRAMS\EDData Icarus\${APP_NAME}.lnk" "$INSTDIR\${APP_EXE}"
+	CreateShortCut "$DESKTOP\${APP_NAME}.lnk" "$INSTDIR\${APP_EXE}"
 !ifdef WEB_SITE
 WriteIniStr "$INSTDIR\${APP_NAME} website.url" "InternetShortcut" "URL" "${WEB_SITE}"
 CreateShortCut "$SMPROGRAMS\EDData Icarus\${APP_NAME} Website.lnk" "$INSTDIR\${APP_NAME} website.url"
 !endif
 !endif
 
-WriteRegStr ${REG_ROOT} "${REG_APP_PATH}" "" "$INSTDIR\${MAIN_APP_EXE}"
+	WriteRegStr ${REG_ROOT} "${REG_APP_PATH}" "" "$INSTDIR\${APP_EXE}"
 WriteRegStr ${REG_ROOT} "${UNINSTALL_PATH}"  "DisplayName" "${APP_NAME}"
 WriteRegStr ${REG_ROOT} "${UNINSTALL_PATH}"  "UninstallString" "$INSTDIR\uninstall.exe"
-WriteRegStr ${REG_ROOT} "${UNINSTALL_PATH}"  "DisplayIcon" "$INSTDIR\${MAIN_APP_EXE}"
+	WriteRegStr ${REG_ROOT} "${UNINSTALL_PATH}"  "DisplayIcon" "$INSTDIR\${APP_EXE}"
 WriteRegStr ${REG_ROOT} "${UNINSTALL_PATH}"  "DisplayVersion" "${VERSION}"
 WriteRegStr ${REG_ROOT} "${UNINSTALL_PATH}"  "Publisher" "${COMP_NAME}"
 WriteRegStr ${REG_ROOT} "${UNINSTALL_PATH}"  "InstallLocation" "$INSTDIR"
@@ -202,7 +202,7 @@ ${INSTALL_TYPE}
 
 # Terminate running processes
 DetailPrint "Checking for running processes..."
-nsExec::ExecToLog 'taskkill /F /IM "${MAIN_APP_EXE}" /T'
+	nsExec::ExecToLog 'taskkill /F /IM "${APP_EXE}" /T'
 nsExec::ExecToLog 'taskkill /F /IM "${SERVICE_EXE}" /T'
 Sleep 1000
 

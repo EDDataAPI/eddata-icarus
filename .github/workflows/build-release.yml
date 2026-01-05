@@ -57,6 +57,16 @@ jobs:
         run: npm run build:package
         continue-on-error: false
 
+      - name: Debug - List dist directory
+        run: |
+          echo "Checking dist directory contents:"
+          if (Test-Path "dist") {
+            Get-ChildItem -Path "dist" -Recurse | Format-Table Name, Length, FullName
+          } else {
+            echo "dist directory does not exist!"
+          }
+        shell: pwsh
+
       - name: Get version
         id: version
         run: |
