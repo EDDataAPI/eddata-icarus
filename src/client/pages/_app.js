@@ -75,7 +75,7 @@ const handleKeyPress = (event) => {
         handleNavigationClick('primary', newIndex)
       }
     }
-  } catch (e) {
+  } catch {
     // Silent fail for navigation errors
   }
 }

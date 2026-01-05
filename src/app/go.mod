@@ -10,7 +10,7 @@ require (
 	github.com/phayes/freeport v0.0.0-20220201140144-74d24b5ae9f5
 	github.com/rodolfoag/gow32 v0.0.0-20230512144032-1e896a3c51aa
 	github.com/sqweek/dialog v0.0.0-20240226140203-065105509627
-	golang.org/x/sys v0.38.0
+	golang.org/x/sys v0.39.0
 )
 
 require (

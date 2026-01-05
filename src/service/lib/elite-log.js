@@ -368,7 +368,7 @@ class EliteLog {
     sortedLog.forEach(logLine => {
       try {
         parsedLog.push(JSON.parse(logLine))
-      } catch (e) {
+      } catch {
         // Skip entries that don't parse (e.g. blank lines)
       }
     })

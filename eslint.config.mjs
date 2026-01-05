@@ -24,10 +24,12 @@ export default [
         setInterval: 'readonly',
         clearTimeout: 'readonly',
         clearInterval: 'readonly',
+        setImmediate: 'readonly',
         fetch: 'readonly',
         WebSocket: 'readonly',
         CustomEvent: 'readonly',
         IntersectionObserver: 'readonly',
+        navigator: 'readonly',
         crypto: 'readonly',
         btoa: 'readonly',
         atob: 'readonly',
@@ -55,7 +57,10 @@ export default [
         vars: 'all',
         args: 'none',
         varsIgnorePattern: '^[A-Z]|^_|^e$|^i$'
-      }]
+      }],
+      'no-unsafe-optional-chaining': 'warn',
+      'no-constant-binary-expression': 'warn',
+      'no-empty': 'warn'
     },
     settings: {
       react: {

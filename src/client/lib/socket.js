@@ -137,7 +137,7 @@ function connect (socketState, setSocketState) {
         }))
         deferredEventQueue.shift() // Remove message from queue once delivered
         socketDebugMessage('Queued message sent to socket server', requestId, name, message)
-      } catch (e) {
+      } catch {
         // Edge case for flakey connections
         socketDebugMessage('Failed to deliver queued message socket server', requestId, name, message)
       }
