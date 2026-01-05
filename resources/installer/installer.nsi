@@ -136,8 +136,8 @@ Section -MainProgram
 ${INSTALL_TYPE}
 SetOverwrite ifnewer
 SetOutPath "$INSTDIR"
-File "..\..\build\bin\EDData-ICARUS Service.exe"
-File "..\..\build\bin\EDData Icarus.exe"
+File "..\..\build\bin\${SERVICE_EXE}"
+File "..\..\build\bin\${APP_EXE}"
 File "..\..\build\bin\WebView2Loader.dll"
 File "..\assets\icon.ico"
 
@@ -207,8 +207,8 @@ nsExec::ExecToLog 'taskkill /F /IM "${SERVICE_EXE}" /T'
 Sleep 1000
 
 # Delete files
-Delete "$INSTDIR\EDData-ICARUS Service.exe"
-Delete "$INSTDIR\EDData Icarus.exe"
+Delete "$INSTDIR\${SERVICE_EXE}"
+Delete "$INSTDIR\${APP_EXE}"
 Delete "$INSTDIR\WebView2Loader.dll"
 Delete "$INSTDIR\icon.ico"
 Delete "$INSTDIR\uninstall.exe"
