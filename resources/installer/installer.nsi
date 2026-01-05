@@ -36,7 +36,7 @@ OutFile "${INSTALLER_NAME}"
 BrandingText "${APP_NAME}"
 XPStyle on
 InstallDirRegKey "${REG_ROOT}" "${REG_APP_PATH}" ""
-InstallDir "$PROGRAMFILES\EDData Icarus"
+InstallDir "$PROGRAMFILES\${APP_NAME}"
 
 ######################################################################
 
@@ -64,7 +64,7 @@ InstallDir "$PROGRAMFILES\EDData Icarus"
 
 !ifdef REG_START_MENU
 !define MUI_STARTMENUPAGE_NODISABLE
-!define MUI_STARTMENUPAGE_DEFAULTFOLDER "EDData Icarus"
+!define MUI_STARTMENUPAGE_DEFAULTFOLDER "${APP_NAME}"
 !define MUI_STARTMENUPAGE_REGISTRY_ROOT "${REG_ROOT}"
 !define MUI_STARTMENUPAGE_REGISTRY_KEY "${UNINSTALL_PATH}"
 !define MUI_STARTMENUPAGE_REGISTRY_VALUENAME "${REG_START_MENU}"
@@ -139,7 +139,7 @@ SetOutPath "$INSTDIR"
 File "..\..\build\bin\${SERVICE_EXE}"
 File "..\..\build\bin\${APP_EXE}"
 File "..\..\build\bin\WebView2Loader.dll"
-File "..\assets\icon.ico"
+File "..\..\build\bin\icon.ico"
 
 ; Install client files (Next.js build output)
 SetOutPath "$INSTDIR\client"
@@ -171,12 +171,12 @@ CreateShortCut "$SMPROGRAMS\$SM_Folder\${APP_NAME} Website.lnk" "$INSTDIR\${APP_
 !endif
 
 !ifndef REG_START_MENU
-CreateDirectory "$SMPROGRAMS\EDData Icarus"
-	CreateShortCut "$SMPROGRAMS\EDData Icarus\${APP_NAME}.lnk" "$INSTDIR\${APP_EXE}"
+CreateDirectory "$SMPROGRAMS\${APP_NAME}"
+	CreateShortCut "$SMPROGRAMS\${APP_NAME}\${APP_NAME}.lnk" "$INSTDIR\${APP_EXE}"
 	CreateShortCut "$DESKTOP\${APP_NAME}.lnk" "$INSTDIR\${APP_EXE}"
 !ifdef WEB_SITE
 WriteIniStr "$INSTDIR\${APP_NAME} website.url" "InternetShortcut" "URL" "${WEB_SITE}"
-CreateShortCut "$SMPROGRAMS\EDData Icarus\${APP_NAME} Website.lnk" "$INSTDIR\${APP_NAME} website.url"
+CreateShortCut "$SMPROGRAMS\${APP_NAME}\${APP_NAME} Website.lnk" "$INSTDIR\${APP_NAME} website.url"
 !endif
 !endif
 
@@ -236,13 +236,13 @@ RmDir "$SMPROGRAMS\$SM_Folder"
 !endif
 
 !ifndef REG_START_MENU
-Delete "$SMPROGRAMS\EDData Icarus\${APP_NAME}.lnk"
+Delete "$SMPROGRAMS\${APP_NAME}\${APP_NAME}.lnk"
 !ifdef WEB_SITE
-Delete "$SMPROGRAMS\EDData Icarus\${APP_NAME} Website.lnk"
+Delete "$SMPROGRAMS\${APP_NAME}\${APP_NAME} Website.lnk"
 !endif
 Delete "$DESKTOP\${APP_NAME}.lnk"
 
-RmDir "$SMPROGRAMS\EDData Icarus"
+RmDir "$SMPROGRAMS\${APP_NAME}"
 !endif
 
 DeleteRegKey ${REG_ROOT} "${REG_APP_PATH}"
