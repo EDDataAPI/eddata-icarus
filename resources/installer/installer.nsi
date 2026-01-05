@@ -90,6 +90,33 @@ InstallDir "$PROGRAMFILES\${APP_NAME}"
 
 ######################################################################
 
+# String search function for language-independent process detection
+Function StrStr
+  Exch $R1 # needle
+  Exch
+  Exch $R2 # haystack
+  Push $R3
+  Push $R4
+  Push $R5
+  StrLen $R3 $R1
+  StrCpy $R4 0
+  loop:
+    StrCpy $R5 $R2 $R3 $R4
+    StrCmp $R5 $R1 done
+    StrCmp $R5 "" done
+    IntOp $R4 $R4 + 1
+    Goto loop
+  done:
+    StrCpy $R1 $R5
+    Pop $R5
+    Pop $R4
+    Pop $R3
+    Pop $R2
+    Exch $R1
+FunctionEnd
+
+######################################################################
+
 # Check if application is running before install
 Function .onInit
 	# Check for existing installation
@@ -115,18 +142,18 @@ Function .onInit
 		Abort
 
 	checkService:
-	# Check if EDData-ICARUS Service is running
+	# Check if EDData-ICARUS Service is running (language-independent check)
 	nsExec::ExecToStack 'tasklist /FI "IMAGENAME eq ${SERVICE_EXE}" /NH'
 	Pop $0
 	Pop $1
-	StrCmp $0 0 0 done
-	# Check if service name is in output (check for both English and German messages)
-	${IfThen} $1 == "INFO: No tasks are running which match the specified criteria." ${|} Goto done ${|}
-	${IfThen} $1 == "INFORMATION: Es werden keine Aufgaben mit den angegebenen Kriterien ausgeführt." ${|} Goto done ${|}
-	# Check if output contains "INFO" or "INFORMATION" (language-agnostic check)
-	StrCpy $2 $1 4
-	${IfThen} $2 == "INFO" ${|} Goto done ${|}
-	${IfThen} $2 == "INFOR" ${|} Goto done ${|}
+	# If the process is running, its name will appear in the output
+	# If not running, output will be an error/info message without the process name
+	Push $1
+	Push "${SERVICE_EXE}"
+	Call StrStr
+	Pop $2
+	StrCmp $2 "" done
+		# Process name found in output - process is running
 		MessageBox MB_OKCANCEL|MB_ICONEXCLAMATION \
 			"${SERVICE_EXE} is currently running. Please close ${APP_NAME} before continuing." \
 			/SD IDCANCEL IDOK done
