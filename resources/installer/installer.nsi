@@ -120,8 +120,13 @@ Function .onInit
 	Pop $0
 	Pop $1
 	StrCmp $0 0 0 done
-	# Check if service name is in output (if not found, tasklist returns "INFO: No tasks...")
-	StrCmp $1 "INFO: No tasks are running which match the specified criteria." done
+	# Check if service name is in output (check for both English and German messages)
+	${IfThen} $1 == "INFO: No tasks are running which match the specified criteria." ${|} Goto done ${|}
+	${IfThen} $1 == "INFORMATION: Es werden keine Aufgaben mit den angegebenen Kriterien ausgeführt." ${|} Goto done ${|}
+	# Check if output contains "INFO" or "INFORMATION" (language-agnostic check)
+	StrCpy $2 $1 4
+	${IfThen} $2 == "INFO" ${|} Goto done ${|}
+	${IfThen} $2 == "INFOR" ${|} Goto done ${|}
 		MessageBox MB_OKCANCEL|MB_ICONEXCLAMATION \
 			"${SERVICE_EXE} is currently running. Please close ${APP_NAME} before continuing." \
 			/SD IDCANCEL IDOK done
