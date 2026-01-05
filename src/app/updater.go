@@ -190,7 +190,7 @@ func DownloadUpdate(downloadUrl string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	tmpfile := filepath.Join(tmpDir, "EDData Icarus Update.exe")
+	tmpfile := filepath.Join(tmpDir, "EDData-Icarus Update.exe")
 
 	// Get file to download
 	resp, err := http.Get(downloadUrl)

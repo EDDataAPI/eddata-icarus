@@ -1,4 +1,4 @@
-# ICARUS Terminal Release Script
+# EDData-ICARUS Terminal Release Script
 # Creates Git tag and triggers GitHub Actions to build and publish release
 
 param(
@@ -24,7 +24,7 @@ if (-not $Version.StartsWith('v')) {
     $Version = "v$Version"
 }
 
-Write-Host "`n=== ICARUS Terminal Release ===" -ForegroundColor Green
+Write-Host "`n=== EDData-ICARUS Terminal Release ===" -ForegroundColor Green
 Write-Host "Version: $Version" -ForegroundColor Yellow
 Write-Host "Message: $Message" -ForegroundColor Yellow
 if ($DryRun) {

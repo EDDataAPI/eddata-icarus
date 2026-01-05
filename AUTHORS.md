@@ -2,7 +2,7 @@
 
 ## Project Creator & Lead Developer
 
-**ICARUS Terminal** is created and maintained by the Elite Dangerous community.
+**EDData-ICARUS Terminal** is created and maintained by the Elite Dangerous community.
 
 ## Credits & Acknowledgments
 
@@ -53,7 +53,7 @@ This project is built on the shoulders of giants. Special thanks to the maintain
 * **[Jura Font](https://fonts.google.com/specimen/Jura)** - Daniel Johnson
   - Licensed under the SIL Open Font License
 
-* **Original Icons** - Custom designed for ICARUS Terminal
+* **Original Icons** - Custom designed for EDData-ICARUS Terminal
 * **Community Icons** - Inspired by Elite Dangerous and edassets.org
 
 ## Modernization & Updates (2025)
@@ -74,7 +74,7 @@ This project is built on the shoulders of giants. Special thanks to the maintain
 ### Community Support
 
 Thank you to all commanders who have:
-- Tested ICARUS Terminal
+- Tested EDData-ICARUS Terminal
 - Reported bugs and issues
 - Suggested features and improvements
 - Shared feedback and experiences
@@ -99,7 +99,7 @@ See [CONTRIB.md](CONTRIB.md) for more information.
 
 ## Support Development
 
-If you want to support ICARUS Terminal development:
+If you want to support EDData-ICARUS Terminal development:
 
 Visit the **[Ardent Pioneer (V9G-G7Z)](https://inara.cz/elite/station/490914/)** fleet carrier.
 
@@ -112,13 +112,13 @@ Selling Tritium and commodities to the carrier directly supports development, al
 
 ## License
 
-ICARUS Terminal is released under the ISC License. See [LICENSE](LICENSE) for details.
+EDData-ICARUS Terminal is released under the ISC License. See [LICENSE](LICENSE) for details.
 
 ---
 
 ## Disclaimer
 
-ICARUS Terminal uses imagery from/inspired by Elite Dangerous, which is copyright Frontier Developments plc. This software is not endorsed by nor reflects the views or opinions of Frontier Developments and no employee of Frontier Developments was involved in the making of it.
+EDData-ICARUS Terminal uses imagery from/inspired by Elite Dangerous, which is copyright Frontier Developments plc. This software is not endorsed by nor reflects the views or opinions of Frontier Developments and no employee of Frontier Developments was involved in the making of it.
 
 Thank you to all those who have created and supported libraries on which this software depends and to Frontier Developments plc for supporting third party tools.
 

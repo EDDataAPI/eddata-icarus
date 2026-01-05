@@ -1,8 +1,8 @@
 package main
 
 const ICON = "icon.ico"
-const LAUNCHER_WINDOW_TITLE = "EDData Icarus Launcher"
-const TERMINAL_WINDOW_TITLE = "EDData Icarus"
+const LAUNCHER_WINDOW_TITLE = "EDData-Icarus Launcher"
+const TERMINAL_WINDOW_TITLE = "EDData-Icarus"
 const LPSZ_CLASS_NAME = "EDDataIcarusWindowClass"
 const SERVICE_EXECUTABLE = "~UNOPT_EDData_Icarus_Service.exe"
 const TERMINAL_EXECUTABLE = "EDData Icarus.exe"

@@ -1,11 +1,11 @@
-!define APP_NAME "EDData Icarus"
+!define APP_NAME "EDData-ICARUS"
 !define COMP_NAME "EDData"
 !define VERSION "${PRODUCT_VERSION}"
 !define COPYRIGHT "EDData"
 !define DESCRIPTION "Companion App for Elite Dangerous"
-!define INSTALLER_NAME "../../dist/EDData Icarus Setup.exe"
-!define MAIN_APP_EXE "EDData Icarus.exe"
-!define SERVICE_EXE "EDData Icarus Service.exe"
+!define INSTALLER_NAME "../../dist/EDData-ICARUS Setup.exe"
+!define APP_EXE "EDData-ICARUS.exe"
+!define SERVICE_EXE "EDData-ICARUS Service.exe"
 !define INSTALL_TYPE "SetShellVarContext current"
 !define REG_ROOT "HKCU"
 !define REG_APP_PATH "Software\Microsoft\Windows\CurrentVersion\App Paths\${MAIN_APP_EXE}"
@@ -115,7 +115,7 @@ Function .onInit
 		Abort
 
 	checkService:
-	# Check if EDData Icarus Service is running
+	# Check if EDData-ICARUS Service is running
 	nsExec::ExecToStack 'tasklist /FI "IMAGENAME eq ${SERVICE_EXE}" /NH'
 	Pop $0
 	Pop $1
@@ -136,7 +136,7 @@ Section -MainProgram
 ${INSTALL_TYPE}
 SetOverwrite ifnewer
 SetOutPath "$INSTDIR"
-File "..\..\build\bin\EDData Icarus Service.exe"
+File "..\..\build\bin\EDData-ICARUS Service.exe"
 File "..\..\build\bin\EDData Icarus.exe"
 File "..\..\build\bin\WebView2Loader.dll"
 File "..\assets\icon.ico"
@@ -207,7 +207,7 @@ nsExec::ExecToLog 'taskkill /F /IM "${SERVICE_EXE}" /T'
 Sleep 1000
 
 # Delete files
-Delete "$INSTDIR\EDData Icarus Service.exe"
+Delete "$INSTDIR\EDData-ICARUS Service.exe"
 Delete "$INSTDIR\EDData Icarus.exe"
 Delete "$INSTDIR\WebView2Loader.dll"
 Delete "$INSTDIR\icon.ico"
